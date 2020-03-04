@@ -32,7 +32,7 @@ bool Model::good_pos(ge211::Position pos) {
     if (pos.x >= 0 && pos.x < geometry_.dims_.width
         && pos.y >= 0 && pos.y < geometry_.dims_.height)
         return true;
-    if (pos.x == )
+
     //todo: holes, doors, obstacles etc.
 }
 
