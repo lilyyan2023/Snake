@@ -21,6 +21,10 @@ protected:
 
 private:
     ge211::Color get_color(int score); // Change color based on score.
+    void draw_begin(ge211::Sprite_set&); // draw the begin menu
+    void draw_gameplay(ge211::Sprite_set&);
+    void draw_pause(ge211::Sprite_set&);
+    void draw_levelup(ge211::Sprite_set&);
 
     Model model_;
     Screen status_; // Which screen do we display?

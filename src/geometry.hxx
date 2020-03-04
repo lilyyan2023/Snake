@@ -9,7 +9,7 @@
 class Geometry {
 public:
     friend class Model;
-
+    Geometry() = default;
     Geometry(ge211::Dimensions dims) {
         dims_ = dims;
     }
