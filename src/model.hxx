@@ -44,7 +44,7 @@ private:
     ge211::Position hole_left_; //left door
     ge211::Position hole_right_; //right door
     std::vector<ge211::Position> obstacle_positions; //Position of obstacles
-
+    std::vector<ge211::Position> apple_positions; //Position of apples
     int score_;
     bool alive_; // Whether the snake is moving.
 
@@ -56,6 +56,12 @@ private:
     // The snake, stored as a ring buffer. ge211::Positions are default
     // initialized to {-1,-1}.
     Snake snake_;
+
+    // snake's moving speed
+    int snake_speed;
+
+    //control snake's moving
+    void turn_left
 };
 
 
