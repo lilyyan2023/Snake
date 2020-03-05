@@ -23,10 +23,12 @@ public:
     void set_snake(Snake& snk) { snake_ = snk; }
     void set_apple(ge211::Position& pos) { apple_ = pos; }
     void set_holes()
-    {hole_top_ = {mid_x(),0};
-    hole_bottom_ = {mid_x(), geometry_.board_dims_.height};
-    hole_left_ = {0, mid_y()};
-    hole_right_ = {geometry_.board_dims_.width, mid_y()};}
+    {
+        hole_top_ = {mid_x(),0};
+        hole_bottom_ = {mid_x(), geometry_.board_dims_.height};
+        hole_left_ = {0, mid_y()};
+        hole_right_ = {geometry_.board_dims_.width, mid_y()};
+    }
 
     bool is_alive() const { return alive_; }
     int get_score() const { return score_; }

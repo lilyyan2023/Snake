@@ -31,6 +31,11 @@ void UI::on_key(ge211::Key key) {
     //todo: other scenarios
 }
 
+void UI::on_mouse_down(ge211::Mouse_button, ge211::Position) {
+    if (status_ == begin || status_ == pause)
+        status_ = gameplay;
+}
+
 void UI::on_frame(double elapsed) {
     switch (status_) {
         case gameplay:
@@ -44,7 +49,8 @@ void UI::on_frame(double elapsed) {
             since_last_update += elapsed;
             if (since_last_update >= model_.geometry_.update_interval_) {
                 since_last_update = 0;
-                level_up_count();
+                // 3 seconds
+                count_down();
             }
             break;
         default:
@@ -78,10 +84,13 @@ void UI::draw_pause(ge211::Sprite_set &set) {
 }
 
 void UI::draw_levelup(ge211::Sprite_set &set) {
+    //todo: adjust coordinates
     set.add_sprite(level_up_sprite,
             {model_.geometry_.mid_x() - 200,
              model_.geometry_.mid_y() - 150}, 1);
-    //todo: figure out how to display numbers
+    set.add_sprite(count_down_sprite(),
+                   {model_.geometry_.mid_x() + 100,
+                    model_.geometry_.mid_y() - 150}, 1);
 }
 
 ge211::Dimensions UI::initial_window_dimensions() const {
@@ -99,5 +108,3 @@ ge211::Position UI::screen_to_board(ge211::Position pos) {
 ge211::Position UI::board_to_screen(ge211::Position pos) {
     return {pos.x * grid_dim.width, pos.y * grid_dim.height};
 }
-
-

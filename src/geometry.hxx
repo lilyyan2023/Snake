@@ -1,6 +1,3 @@
-
-
-// This is for calibrating parameters quickly. Might add more.
 #include <ge211.hxx>
 
 #ifndef FINAL_PROJECT_GEOMETRY_HXX
