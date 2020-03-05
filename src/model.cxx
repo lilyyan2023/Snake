@@ -3,11 +3,11 @@
 Model::Model(Geometry geometry)
 : geometry_(geometry)
 , apple_{-1,-1}
-, dir_{-1,-1}
 , score_(0)
 , alive_(false)
 , apple_timer_(5)
-, snake_{{0, mid_y()},{1, mid_y()}}
+, snake_{{2, mid_y() + 1},{1, mid_y() + 1}}
+, dir_{1,0}
 , hole_top_ {mid_x(),0}
 , hole_bottom_ {mid_x(), geometry_.board_dims_.height}
 , hole_left_ {0, mid_y()}
