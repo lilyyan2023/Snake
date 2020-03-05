@@ -12,19 +12,21 @@ public:
     void turn(ge211::Dimensions dir) { dir_ = dir; }
     // Advances the snake_, check if dies. Eats apple and grow if possible.
     void update();
-    // Midpoints of respective dimensions.
-    int mid_x() const { return geometry_.dims_.width / 2; }
-    int mid_y() const { return geometry_.dims_.height / 2; }
 
+    // helpers
+    int mid_x() const { return geometry_.board_dims_.width / 2; }
+    int mid_y() const { return geometry_.board_dims_.height / 2; }
+    ge211::Dimensions window_dims() const { return geometry_.window_dims_; }
+    ge211::Dimensions board_dims() const { return geometry_.board_dims_; }
 
     // Helpers for testing
     void set_snake(Snake& snk) { snake_ = snk; }
     void set_apple(ge211::Position& pos) { apple_ = pos; }
     void set_holes()
     {hole_top_ = {mid_x(),0};
-    hole_bottom_ = {mid_x(), geometry_.dims_.height};
+    hole_bottom_ = {mid_x(), geometry_.board_dims_.height};
     hole_left_ = {0, mid_y()};
-    hole_right_ = {geometry_.dims_.width, mid_y()};}
+    hole_right_ = {geometry_.board_dims_.width, mid_y()};}
 
     bool is_alive() const { return alive_; }
     int get_score() const { return score_; }
@@ -56,12 +58,6 @@ private:
     // The snake, stored as a ring buffer. ge211::Positions are default
     // initialized to {-1,-1}.
     Snake snake_;
-
-    // snake's moving speed
-    int snake_speed;
-
-    //control snake's moving
-    void turn_left
 };
 
 
