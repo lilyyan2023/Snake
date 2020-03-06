@@ -38,29 +38,27 @@ protected:
 
 private:
     /// Helpers
-    static ge211::Color get_color(); // Change color based on score.
+    ge211::Color get_color(); // Change color based on score.
     void draw_begin(ge211::Sprite_set&); // draw the begin menu
     void draw_gameplay(ge211::Sprite_set&);
     void draw_pause(ge211::Sprite_set&);
     void draw_levelup(ge211::Sprite_set&);
     void draw_gameover(ge211::Sprite_set&);
+    void update_sprites();
     ge211::Position screen_to_board(ge211::Position);
     ge211::Position board_to_screen(ge211::Position);
 
     ge211::Dimensions grid_dim;
     /// Sprites
     ge211::Rectangle_sprite body_sprite_{grid_dim, ge211::Color::white()};
-    ge211::Rectangle_sprite &body_sprite()
-    {
-        body_sprite_ = ge211::Rectangle_sprite{grid_dim, get_color()};
-        return body_sprite_;
-    }
     ge211::Rectangle_sprite tail_sprite{grid_dim, ge211::Color::medium_red()};
     ge211::Text_sprite title_sprite{"FANCY SNAKE", {"sans.ttf", 55}};
     ge211::Text_sprite press_key_sprite{"press any key to start", {"sans.ttf", 25}};
     ge211::Text_sprite pause_sprite{"PAUSE", {"sans.ttf", 55}};
     ge211::Text_sprite level_up_sprite{"Level up!", {"sans.ttf", 55}};
     ge211::Text_sprite game_over_sprite{"GAME OVER", {"sans.ttf", 55}};
+    ge211::Text_sprite score_sprite_1{"score: 10", {"sans.ttf", 17}};
+    ge211::Text_sprite score_sprite_2{"next level: 500", {"sans.ttf", 17}};
     // Counting down when leveling up
     int count_down_{3};
     void count_down()

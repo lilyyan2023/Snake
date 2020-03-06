@@ -3,7 +3,7 @@
 UI::UI(Geometry geometry)
 : model_(geometry)
 , grid_dim{geometry.grid_size, geometry.grid_size}
-, status_(Screen::levelup)
+, status_(Screen::begin)
 , since_last_update(0)
 , iron_curtain{geometry.window_dims_,
                ge211::Color::from_rgba(0.1, 0.4, 0.1, 0.3)}
@@ -35,6 +35,7 @@ void UI::on_frame(double elapsed) {
             if (since_last_update >= model_.geometry_.update_interval_) {
                 since_last_update = 0;
                 model_.update();
+                update_sprites();
             }
             break;
         case levelup:
@@ -51,8 +52,17 @@ void UI::on_frame(double elapsed) {
 }
 
 ge211::Color UI::get_color() {
-    //todo: change color based on score.
-    return ge211::Color::white();
+    if (model_.score_ < 100)
+        return ge211::Color::white();
+    if (model_.score_ < 200)
+        return ge211::Color::medium_yellow();
+    if (model_.score_ < 300)
+        return ge211::Color::medium_green();
+    if (model_.score_ < 400)
+        return ge211::Color::medium_blue();
+    if (model_.score_ < 500)
+        return ge211::Color::medium_red();
+    return ge211::Color::medium_magenta();
 }
 
 void UI::draw_begin(ge211::Sprite_set &set) {
@@ -70,9 +80,13 @@ void UI::draw_gameplay(ge211::Sprite_set &set) {
             set.add_sprite(tail_sprite,
                     board_to_screen(body), 2);
         else
-            set.add_sprite(body_sprite(),
+            set.add_sprite(body_sprite_,
                            board_to_screen(body), 1);
     }
+    set.add_sprite(score_sprite_1,
+            {2, model_.geometry_.window_dims_.height - 48}, 2);
+    set.add_sprite(score_sprite_2,
+                   {2, model_.geometry_.window_dims_.height - 28}, 2);
 }
 
 void UI::draw_pause(ge211::Sprite_set &set) {
@@ -120,4 +134,12 @@ ge211::Position UI::screen_to_board(ge211::Position pos) {
 ge211::Position UI::board_to_screen(ge211::Position pos) {
     return {pos.x * (grid_dim.width + model_.geometry_.space_size)
             , pos.y * (grid_dim.height + model_.geometry_.space_size)};
+}
+
+void UI::update_sprites() {
+    body_sprite_ = ge211::Rectangle_sprite
+            {grid_dim, get_color()};
+    score_sprite_1 = ge211::Text_sprite
+            {"score: " + std::to_string(model_.score_)
+             , {"sans.ttf", 17}};
 }
