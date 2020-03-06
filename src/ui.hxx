@@ -3,7 +3,7 @@
 
 #include "model.hxx"
 
-enum Screen { gameplay, begin, pause, levelup }; // For displaying different screens in UI.
+enum Screen { gameplay, begin, pause, levelup, gameover }; // For displaying different screens in UI.
 
 class UI : public ge211::Abstract_game {
 public:
@@ -24,6 +24,9 @@ protected:
             case levelup:
                 draw_levelup(set);
                 break;
+            case gameover:
+                draw_gameover(set);
+                break;
         }
     }
     void on_key(ge211::Key) override; // Change direction with direction key.
@@ -35,35 +38,44 @@ protected:
 
 private:
     /// Helpers
-    ge211::Color get_color(int score); // Change color based on score.
+    static ge211::Color get_color(); // Change color based on score.
     void draw_begin(ge211::Sprite_set&); // draw the begin menu
     void draw_gameplay(ge211::Sprite_set&);
     void draw_pause(ge211::Sprite_set&);
     void draw_levelup(ge211::Sprite_set&);
+    void draw_gameover(ge211::Sprite_set&);
     ge211::Position screen_to_board(ge211::Position);
     ge211::Position board_to_screen(ge211::Position);
 
     ge211::Dimensions grid_dim;
     /// Sprites
-    ge211::Rectangle_sprite body_sprite{grid_dim, get_color(model_.get_score())};
+    ge211::Rectangle_sprite body_sprite_{grid_dim, ge211::Color::white()};
+    ge211::Rectangle_sprite &body_sprite()
+    {
+        body_sprite_ = ge211::Rectangle_sprite{grid_dim, get_color()};
+        return body_sprite_;
+    }
     ge211::Rectangle_sprite tail_sprite{grid_dim, ge211::Color::medium_red()};
     ge211::Text_sprite title_sprite{"FANCY SNAKE", {"sans.ttf", 55}};
     ge211::Text_sprite press_key_sprite{"press any key to start", {"sans.ttf", 25}};
     ge211::Text_sprite pause_sprite{"PAUSE", {"sans.ttf", 55}};
     ge211::Text_sprite level_up_sprite{"Level up!", {"sans.ttf", 55}};
+    ge211::Text_sprite game_over_sprite{"GAME OVER", {"sans.ttf", 55}};
     // Counting down when leveling up
     int count_down_{3};
     void count_down()
     {
         if (!count_down_) {
             status_ = gameplay;
+            //todo: adjust speed with level
+            model_.geometry_.update_interval_ -= 0.015;
             count_down_ = 3;
         }
         count_down_--;
     }
     // Drawing that countdown
     ge211::Text_sprite count_down_sprite_;
-    ge211::Text_sprite& count_down_sprite()
+    ge211::Text_sprite &count_down_sprite()
     {
         count_down_sprite_ = {std::to_string(count_down_),
                               {"sans.ttf", 50}};
@@ -72,6 +84,7 @@ private:
 
     // This is for pause interface.
     ge211::Rectangle_sprite iron_curtain;
+    ge211::Rectangle_sprite steel_curtain;
 
     Model model_;
     Screen status_; // Which screen do we display?

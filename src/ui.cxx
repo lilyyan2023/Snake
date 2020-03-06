@@ -3,10 +3,12 @@
 UI::UI(Geometry geometry)
 : model_(geometry)
 , grid_dim{geometry.grid_size, geometry.grid_size}
-, status_(Screen::begin)
+, status_(Screen::levelup)
 , since_last_update(0)
 , iron_curtain{geometry.window_dims_,
                ge211::Color::from_rgba(0.1, 0.4, 0.1, 0.3)}
+, steel_curtain{geometry.window_dims_,
+                ge211::Color::from_rgba(0.4, 0.1, 0.1, 0.3)}
 { }
 
 void UI::on_key(ge211::Key key) {
@@ -20,6 +22,10 @@ void UI::on_key(ge211::Key key) {
 void UI::on_mouse_down(ge211::Mouse_button, ge211::Position) {
     if (status_ == begin || status_ == pause)
         status_ = gameplay;
+    if (status_ == gameover) {
+        model_ = Model(model_.geometry_);
+        status_ = gameplay;
+    }
 }
 
 void UI::on_frame(double elapsed) {
@@ -44,7 +50,7 @@ void UI::on_frame(double elapsed) {
     }
 }
 
-ge211::Color UI::get_color(int score) {
+ge211::Color UI::get_color() {
     //todo: change color based on score.
     return ge211::Color::white();
 }
@@ -64,16 +70,16 @@ void UI::draw_gameplay(ge211::Sprite_set &set) {
             set.add_sprite(tail_sprite,
                     board_to_screen(body), 2);
         else
-            set.add_sprite(body_sprite,
-                    board_to_screen(body), 1);
+            set.add_sprite(body_sprite(),
+                           board_to_screen(body), 1);
     }
 }
 
 void UI::draw_pause(ge211::Sprite_set &set) {
     draw_gameplay(set);
-    set.add_sprite(iron_curtain, {0,0}, 100);
+    set.add_sprite(iron_curtain, {0,0}, 10);
     set.add_sprite(pause_sprite, {model_.geometry_.mid_x() - 100,
-                                  model_.geometry_.mid_y() - 150}, 101);
+                                  model_.geometry_.mid_y() - 150}, 11);
 }
 
 void UI::draw_levelup(ge211::Sprite_set &set) {
@@ -85,6 +91,18 @@ void UI::draw_levelup(ge211::Sprite_set &set) {
                    {model_.geometry_.mid_x() - 20,
                     model_.geometry_.mid_y() + 150}, 1);
 }
+
+void UI::draw_gameover(ge211::Sprite_set &set) {
+    draw_gameplay(set);
+    set.add_sprite(steel_curtain, {0,0}, 10);
+    set.add_sprite(game_over_sprite,
+            {model_.geometry_.mid_x() - 175,
+             model_.geometry_.mid_y() - 150}, 11);
+    set.add_sprite(press_key_sprite,
+                   {model_.geometry_.mid_x() - 130,
+                    model_.geometry_.mid_y() + 160}, 11);
+}
+
 
 ge211::Dimensions UI::initial_window_dimensions() const {
     return model_.window_dims();
