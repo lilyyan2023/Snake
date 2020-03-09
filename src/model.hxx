@@ -12,7 +12,7 @@ public:
     void turn(ge211::Dimensions dir) { dir_ = dir; }
     // Advances the snake_, check if dies. Eats apple and grow if possible.
     void update();
-
+    void eat_apple();
     // helpers
     int mid_x() const { return geometry_.board_dims_.width / 2; }
     int mid_y() const { return geometry_.board_dims_.height / 2; }
@@ -47,9 +47,11 @@ private:
     ge211::Position hole_bottom_; //bottom door
     ge211::Position hole_left_; //left door
     ge211::Position hole_right_; //right door
-    std::vector<ge211::Position> obstacle_positions; //Position of obstacles
-    std::vector<ge211::Position> apple_positions; //Position of apples
-    int score_;
+    ge211::Position door_; //the door after the score has reached
+
+    std::vector<ge211::Position> obstacle_positions; //Positions of obstacles
+    std::vector<ge211::Position> wall_positions; //Positions of walls
+    int score_; //score varies between levels
     bool alive_; // Whether the snake is moving.
 
     // Starts at 5 and decreases each time. When reaches 0, timed apple appears,
@@ -60,6 +62,9 @@ private:
     // The snake, stored as a ring buffer. ge211::Positions are default
     // initialized to {-1,-1}.
     Snake snake_;
+
+    int level_; //each level corresponds to each number
+
 };
 
 
