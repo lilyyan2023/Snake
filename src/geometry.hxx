@@ -12,7 +12,6 @@ public:
         window_dims_ = {(board_dims_.width + 2) * (grid_size + space_size)
             , (board_dims_.height + 2) * (grid_size + space_size) + 60};
     }
-
     int mid_x() { return window_dims_.width / 2; }
     int mid_y() { return window_dims_.height / 2; }
 private:
