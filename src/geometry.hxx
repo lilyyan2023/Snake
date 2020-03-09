@@ -7,7 +7,8 @@ class Geometry {
 public:
     friend class Model;
     friend class UI;
-    Geometry() {
+    Geometry()
+    {
         window_dims_ = {(board_dims_.width + 2) * (grid_size + space_size)
             , (board_dims_.height + 2) * (grid_size + space_size) + 60};
     }

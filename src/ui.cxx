@@ -16,14 +16,14 @@ void UI::on_key(ge211::Key key) {
         status_ = gameplay;
     else if (status_ == gameplay && key == ge211::Key::code('q'))
         status_ = pause;
-    //todo: other scenarios
+    //todo: other scenarios like the skill.
 }
 
 void UI::on_mouse_down(ge211::Mouse_button, ge211::Position) {
     if (status_ == begin || status_ == pause)
         status_ = gameplay;
     if (status_ == gameover) {
-        model_ = Model(model_.geometry_);
+        model_ = Model(geometry());
         status_ = gameplay;
     }
 }
@@ -32,10 +32,12 @@ void UI::on_frame(double elapsed) {
     switch (status_) {
         case gameplay:
             since_last_update += elapsed;
-            if (since_last_update >= model_.geometry_.update_interval_) {
+            if (since_last_update >= geometry().update_interval_) {
                 since_last_update = 0;
                 model_.update();
                 update_sprites();
+                if (!model_.alive_)
+                    status_ = gameover;
             }
             break;
         case levelup:
@@ -67,11 +69,11 @@ ge211::Color UI::get_color() {
 
 void UI::draw_begin(ge211::Sprite_set &set) {
     set.add_sprite(title_sprite,
-                   {model_.geometry_.mid_x() - 200,
-             model_.geometry_.mid_y() - 150}, 1);
+                   {geometry().mid_x() - 200,
+                    geometry().mid_y() - 150}, 1);
     set.add_sprite(press_key_sprite,
-                   {model_.geometry_.mid_x() - 130,
-                    model_.geometry_.mid_y() + 160}, 1);
+                   {geometry().mid_x() - 130,
+                    geometry().mid_y() + 160}, 1);
 }
 
 void UI::draw_gameplay(ge211::Sprite_set &set) {
@@ -84,37 +86,36 @@ void UI::draw_gameplay(ge211::Sprite_set &set) {
                            board_to_screen(body), 1);
     }
     set.add_sprite(score_sprite_1,
-            {2, model_.geometry_.window_dims_.height - 48}, 2);
+            {2, geometry().window_dims_.height - 48}, 2);
     set.add_sprite(score_sprite_2,
-                   {2, model_.geometry_.window_dims_.height - 28}, 2);
+                   {2, geometry().window_dims_.height - 28}, 2);
 }
 
 void UI::draw_pause(ge211::Sprite_set &set) {
     draw_gameplay(set);
     set.add_sprite(iron_curtain, {0,0}, 10);
-    set.add_sprite(pause_sprite, {model_.geometry_.mid_x() - 100,
-                                  model_.geometry_.mid_y() - 150}, 11);
+    set.add_sprite(pause_sprite, {geometry().mid_x() - 100,
+                                  geometry().mid_y() - 150}, 11);
 }
 
 void UI::draw_levelup(ge211::Sprite_set &set) {
-    //todo: adjust coordinates
     set.add_sprite(level_up_sprite,
-            {model_.geometry_.mid_x() - 120,
-             model_.geometry_.mid_y() - 150}, 1);
+            {geometry().mid_x() - 120,
+             geometry().mid_y() - 150}, 1);
     set.add_sprite(count_down_sprite(),
-                   {model_.geometry_.mid_x() - 20,
-                    model_.geometry_.mid_y() + 150}, 1);
+                   {geometry().mid_x() - 20,
+                    geometry().mid_y() + 150}, 1);
 }
 
 void UI::draw_gameover(ge211::Sprite_set &set) {
     draw_gameplay(set);
     set.add_sprite(steel_curtain, {0,0}, 10);
     set.add_sprite(game_over_sprite,
-            {model_.geometry_.mid_x() - 175,
-             model_.geometry_.mid_y() - 150}, 11);
+            {geometry().mid_x() - 175,
+             geometry().mid_y() - 150}, 11);
     set.add_sprite(press_key_sprite,
-                   {model_.geometry_.mid_x() - 130,
-                    model_.geometry_.mid_y() + 160}, 11);
+                   {geometry().mid_x() - 130,
+                    geometry().mid_y() + 160}, 11);
 }
 
 
@@ -127,13 +128,13 @@ std::string UI::initial_window_title() const {
 }
 
 ge211::Position UI::screen_to_board(ge211::Position pos) {
-    return {pos.x / (grid_dim.width + model_.geometry_.space_size)
-            , pos.y / (grid_dim.height + model_.geometry_.space_size)};
+    return {pos.x / (grid_dim.width + geometry().space_size)
+            , pos.y / (grid_dim.height + geometry().space_size)};
 }
 
 ge211::Position UI::board_to_screen(ge211::Position pos) {
-    return {pos.x * (grid_dim.width + model_.geometry_.space_size)
-            , pos.y * (grid_dim.height + model_.geometry_.space_size)};
+    return {pos.x * (grid_dim.width + geometry().space_size)
+            , pos.y * (grid_dim.height + geometry().space_size)};
 }
 
 void UI::update_sprites() {

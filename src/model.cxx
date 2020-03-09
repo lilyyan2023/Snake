@@ -21,6 +21,9 @@ Model::Model(Geometry geometry)
 void Model::update() {
     if (alive_ ) {
         snake_.push_front(snake_.front() + dir_);
+        // TODO: pop_back each time, since the snake is moving forward; EXTRA pop_back if eats tail.
+        // TODO: checking the head's status is enough. You can try the "good_pos" func I wrote, might make it easier.
+        // TODO: call eat_apple() somewhere in update
         for (ge211::Position s: snake_) {
             for (ge211::Position w: wall_positions) {
                 if (s == w) {
@@ -40,13 +43,13 @@ void Model::update() {
         if (snake_head() == snake_tail()) {
             snake_.pop_back();
         }
+        // TODO: snake_[0] is just head. This kills the snake.
         for (int i = 0; i < snake_len() - 2; ++i) {
             if (snake_head() == snake_[i]){
                 alive_ = false;
                 return;
             }
         }
-
     }
 
 }
@@ -56,13 +59,17 @@ void Model::update() {
 void Model::eat_apple() {
     if (level_ == 1) {
         //level 1 : 120 (subject to change)
+        // TODO: Can store the constants in geometry_ so it's easier to manage.
+        // TODO: Then you don't have to separate the cases.
         while (score_ < 120) {
             int round = 1;
             int normal_apple = 0;
             int timed_apple = 0;
             score_ = snake_len() * 5 + normal_apple * 1 + timed_apple * 10;
             if (snake_head() == apple_) {
+                // TODO: this is the wrong grid to push.
                 snake_.push_back(snake_tail() + dir_);
+                // TODO: didn't get this - I used a different method in proposal, but you can also explain yours.
                 if (round % 5 != 0) {
                     normal_apple++;
                 } else {
@@ -70,7 +77,7 @@ void Model::eat_apple() {
                 }
                 round++;
             }
-            //change color per 20 points
+            //change color per 20 points TODO: this is done in UI.
         }
 
     }
@@ -118,9 +125,9 @@ void Model::eat_apple() {
 //
 
 bool Model::good_pos(ge211::Position pos) {
-    if (pos.x >= 0 && pos.x < geometry_.board_dims_.width
-        && pos.y >= 0 && pos.y < geometry_.board_dims_.height)
-        return true;
+    if (pos.x <= 0 || pos.x > geometry_.board_dims_.width
+        || pos.y <= 0 || pos.y > geometry_.board_dims_.height)
+        return false;
     //todo: holes, doors, obstacles etc.
 }
 
