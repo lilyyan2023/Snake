@@ -21,6 +21,7 @@ private:
     int pass_score{400};
     int grid_size{20};
     int space_size{2};
+    std::vector<int> level_score_ = {120, 300, 600};
 };
 
 #endif

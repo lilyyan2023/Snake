@@ -12,7 +12,7 @@ public:
     void turn(ge211::Dimensions dir) { dir_ = dir; }
     // Advances the snake_, check if dies. Eats apple and grow if possible.
     void update();
-    void eat_apple();
+    bool eat_apple();
     // helpers
     int mid_x() const { return geometry_.board_dims_.width / 2; }
     int mid_y() const { return geometry_.board_dims_.height / 2; }

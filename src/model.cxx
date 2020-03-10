@@ -3,7 +3,7 @@
 Model::Model(Geometry geometry)
 : geometry_(geometry)
 , apple_{-1,-1}
-, score_(0)
+, score_(10)
 , alive_(true)
 , apple_timer_(5)
 , snake_{{2, mid_y() + 1},{1, mid_y() + 1}}
@@ -49,78 +49,37 @@ void Model::update() {
             }
         }
         eat_apple();
-        snake_.pop_back();
+
+            snake_.pop_back();
+
+
     }
 
 }
 //1. check if the new position eats the apple
 //2. increment the score based on the type of the apple the snake eats
 //3. change the body color of the snake
-void Model::eat_apple() {
-//    if (level_ == 1) {
-//        //level 1 : 120 (subject to change)
-//        // TODO: Can store the constants in geometry_ so it's easier to manage.
-//        // TODO: Then you don't have to separate the cases.
-//        while (score_ < 120) {
-//            int round = 1;
-//            int normal_apple = 0;
-//            int timed_apple = 0;
-//            score_ = snake_len() * 5 + normal_apple * 1 + timed_apple * 10;
-//            if (snake_head() == apple_) {
-//                // TODO: this is the wrong grid to push.
-//                snake_.push_back(snake_tail() + dir_);
-//                // TODO: didn't get this - I used a different method in proposal, but you can also explain yours.
-//                if (round % 5 != 0) {
-//                    normal_apple++;
-//                } else {
-//                    timed_apple++;
-//                }
-//                round++;
-//            }
-//            //change color per 20 points TODO: this is done in UI.
-//        }
-//
-//    }
-//    if (level_ == 2){
-//        //level 2 : 300 (subject to change)
-//        while (score_ < 300){
-//            int round = 1;
-//            int normal_apple = 0;
-//            int timed_apple = 0;
-//            score_ = snake_len() * 5 + normal_apple * 1 + timed_apple * 10;
-//            if (snake_head() == apple_){
-//                snake_.push_back(snake_tail() + dir_);
-//                if (round % 5 != 0){
-//                    normal_apple ++;
-//                }
-//                else{
-//                    timed_apple ++;
-//                }
-//                round++;
-//            }
-//        }
-//        //change color per 50 points
-//    }
-//    if (level_ == 3){
-//        //level 3 : 600 (subject to change)
-//        while (score_ < 600){
-//            int round = 1;
-//            int normal_apple = 0;
-//            int timed_apple = 0;
-//            score_ = snake_len() * 5 + normal_apple * 1 + timed_apple * 10;
-//            if (snake_head() == apple_){
-//                snake_.push_back(snake_tail() + dir_);
-//                if (round % 5 != 0){
-//                    normal_apple ++;
-//                }
-//                else{
-//                    timed_apple ++;
-//                }
-//                round++;
-//            }
-//        }
-//        //change color per 100 points
-//    }
+bool Model::eat_apple() {
+    bool eat = false;
+        //level 1 : 120 (subject to change)
+        // TODO: Can store the constants in geometry_ so it's easier to manage.
+        // TODO: Then you don't have to separate the cases.
+        if (snake_head() == apple_) {
+            eat = true;
+            apple_timer_--;
+            apple_ = {0, 0};
+            // TODO: this is the wrong grid to push.
+            snake_.push_back(snake_tail() + dir_);
+            if (apple_timer_ <= 0) {
+                score_ = score_ + 5 + (1/abs(apple_timer_)) * 10 ;
+                apple_timer_ = 5;
+            } else {
+                score_ = score_ + 6;
+            }
+        }
+        if (score_ >= geometry_.level_score_[level_]){
+            return eat;
+        }
 }
 //
 
