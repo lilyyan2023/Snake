@@ -48,10 +48,13 @@ private:
     void update_sprites();
     ge211::Position screen_to_board(ge211::Position);
     ge211::Position board_to_screen(ge211::Position);
+    bool can_put(const ge211::Position&);
+    ge211::Position random_pos();
 
     ge211::Dimensions grid_dim;
     /// Sprites
     ge211::Rectangle_sprite wall_sprite{grid_dim, ge211::Color::white()};
+    ge211::Circle_sprite apple_sprite{grid_dim.width / 2, ge211::Color::medium_red()};
     ge211::Rectangle_sprite body_sprite_{grid_dim, ge211::Color::white()};
     ge211::Rectangle_sprite tail_sprite{grid_dim, ge211::Color::medium_red()};
     ge211::Text_sprite title_sprite{"FANCY SNAKE", {"sans.ttf", 55}};

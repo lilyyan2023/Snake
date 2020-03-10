@@ -19,7 +19,6 @@ void UI::on_key(ge211::Key key) {
         status_ = gameplay;
     }
     // TODO: levelup and stuff
-
     if (status_ == gameplay) {
         if (key == ge211::Key::code('q'))
             status_ = pause;
@@ -54,6 +53,8 @@ void UI::on_frame(double elapsed) {
                 update_sprites();
                 if (!model_.alive())
                     status_ = gameover;
+                if (model_.apple() == ge211::Position{-1,-1})
+                    model_.set_apple(random_pos());
             }
             break;
         case levelup:
@@ -107,6 +108,7 @@ void UI::draw_gameplay(ge211::Sprite_set &set) {
             {2, geometry().window_dims_.height - 48}, 2);
     set.add_sprite(score_sprite_2,
                    {2, geometry().window_dims_.height - 28}, 2);
+    set.add_sprite(apple_sprite, board_to_screen(model_.apple()), 0);
 }
 
 void UI::draw_pause(ge211::Sprite_set &set) {
@@ -162,4 +164,19 @@ void UI::update_sprites() {
     score_sprite_1 = ge211::Text_sprite
             {"score: " + std::to_string(model_.score())
              , {"sans.ttf", 17}};
+}
+
+bool UI::can_put(const ge211::Position& pos) {
+    if (pos == model_.snake_head() || pos == model_.snake_tail())
+        return false;
+    return model_.good_pos(pos);
+}
+
+ge211::Position UI::random_pos() {
+    ge211::Position pos{-1,-1};
+    do
+        pos = {get_random().between(1, model_.board_dims().width)
+                , get_random().between(1, model_.board_dims().height)};
+    while (!can_put(pos));
+    return pos;
 }

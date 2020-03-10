@@ -17,7 +17,7 @@ public:
 private:
     ge211::Dimensions board_dims_{41, 27}; // Dimension of the board
     ge211::Dimensions window_dims_{};
-    double update_interval_{0.07};
+    double update_interval_{0.1};
     int pass_score{400};
     int grid_size{20};
     int space_size{2};

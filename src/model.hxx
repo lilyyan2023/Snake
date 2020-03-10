@@ -15,17 +15,18 @@ public:
     }
     // Advances the snake_, check if dies. Eats apple and grow if possible.
     void update();
-    bool eat_apple();
     // helpers
     int mid_x() const { return geometry_.board_dims_.width / 2; }
     int mid_y() const { return geometry_.board_dims_.height / 2; }
     ge211::Dimensions window_dims() const { return geometry_.window_dims_; }
     ge211::Dimensions board_dims() const { return geometry_.board_dims_; }
+    bool good_pos(const ge211::Position&); // Check if OOB, hits obstacle, hits wall, hits self.
 
     // Helpers
     void level_up();
     void set_snake(Snake& snk) { snake_ = snk; }
-    void set_apple(ge211::Position& pos) { apple_ = pos; }
+    ge211::Position apple() { return apple_; }
+    void set_apple(const ge211::Position& pos) { apple_ = pos; }
     void set_holes()
     {
         hole_top_ = {mid_x(),0};
@@ -42,9 +43,10 @@ public:
     ge211::Position snake_head() const { return snake_.front(); }
     ge211::Position snake_tail() const { return snake_.back(); }
     std::vector<ge211::Position>& wall_positions() { return wall_positions_; }
+    std::vector<ge211::Position>& obstacle_positions() { return obstacle_positions_; }
 
 private:
-    bool good_pos(ge211::Position); // Check if a position is legal.
+    bool eat_apple();
 
     Geometry geometry_; // Dimensions of the board.
     ge211::Position apple_; // Position of apple, regular or timed.
@@ -54,7 +56,7 @@ private:
     ge211::Position hole_left_; //left door
     ge211::Position hole_right_; //right door
 
-    std::vector<ge211::Position> obstacle_positions; //Positions of obstacles
+    std::vector<ge211::Position> obstacle_positions_; //Positions of obstacles
     std::vector<ge211::Position> wall_positions_; //Positions of walls
     int score_; //score varies between levels
     bool alive_; // Whether the snake is moving.

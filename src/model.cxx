@@ -4,7 +4,7 @@
 
 Model::Model(Geometry  geometry)
 : geometry_(std::move(geometry))
-, apple_{-1,-1}
+, apple_{-1, -1}
 , score_(10)
 , alive_(true)
 , apple_timer_(5)
@@ -16,6 +16,7 @@ Model::Model(Geometry  geometry)
 , hole_right_ {geometry_.board_dims_.width, mid_y()}
 , level_ (1) //more UI manipulation
 {
+    // TODO; holes!
         for (int j = 0; j <= geometry_.board_dims_.height + 1; j++){
             wall_positions_.emplace_back(0, j);
             wall_positions_.emplace_back(geometry_.board_dims_.width + 1, j);
@@ -31,11 +32,10 @@ Model::Model(Geometry  geometry)
 void Model::update() {
     if (alive_ ) {
         snake_.push_front(snake_.front() + dir_);
-        // TODO: checking the head's status is enough. You can try the "good_pos" func I wrote, might make it easier.
-        // TODO: call eat_apple() somewhere in update
         if (!eat_apple()){
             snake_.pop_back();
         }
+        // TODO: do this in the "good_pos" function.
         for (ge211::Position s: snake_) {
             for (ge211::Position w: wall_positions_) {
                 if (s == w) {
@@ -45,7 +45,7 @@ void Model::update() {
             }
         }
         for (ge211::Position s: snake_) {
-            for (ge211::Position o: obstacle_positions) {
+            for (ge211::Position o: obstacle_positions_) {
                 if (s == o) {
                     alive_ = false;
                     return;
@@ -71,11 +71,10 @@ bool Model::eat_apple() {
     //level 1 : 120 (subject to change)
     // TODO: Can store the constants in geometry_ so it's easier to manage.
     // TODO: Then you don't have to separate the cases.
-
     if (snake_head() == apple_) {
         eat = true;
         apple_timer_--;
-        apple_ = {0, 0};
+        apple_ = {-1, -1};
         if (apple_timer_ <= 0) {
             score_ = score_ + 5 + (1/abs(apple_timer_)) * 10 ;
             apple_timer_ = 5;
@@ -88,11 +87,11 @@ bool Model::eat_apple() {
 }
 //
 
-bool Model::good_pos(ge211::Position pos) {
+bool Model::good_pos(const ge211::Position& pos) {
     if (pos.x <= 0 || pos.x > geometry_.board_dims_.width
         || pos.y <= 0 || pos.y > geometry_.board_dims_.height)
         return false;
-    //todo: holes, doors, obstacles etc.
+    //TODO: hits wall, obsticles, or self.
 }
 
 void Model::level_up() {
