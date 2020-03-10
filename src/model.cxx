@@ -49,12 +49,10 @@ void Model::update() {
             }
         }
         eat_apple();
-
+        if (eat_apple() == false){
             snake_.pop_back();
-
-
+        }
     }
-
 }
 //1. check if the new position eats the apple
 //2. increment the score based on the type of the apple the snake eats
