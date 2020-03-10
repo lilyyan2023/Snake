@@ -91,6 +91,7 @@ bool Model::good_pos(const ge211::Position& pos) {
     if (pos.x <= 0 || pos.x > geometry_.board_dims_.width
         || pos.y <= 0 || pos.y > geometry_.board_dims_.height)
         return false;
+    return true;
     //TODO: hits wall, obsticles, or self.
 }
 

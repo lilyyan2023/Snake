@@ -17,11 +17,11 @@ public:
 private:
     ge211::Dimensions board_dims_{41, 27}; // Dimension of the board
     ge211::Dimensions window_dims_{};
-    double update_interval_{0.1};
+    double update_interval_{0.12};
     int pass_score{400};
     int grid_size{20};
     int space_size{2};
-    std::vector<int> level_score_ = {0, 120, 300, 600};
+    std::vector<int> level_score_ = {0, 240, 600, 900};
 };
 
 #endif
