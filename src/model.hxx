@@ -41,7 +41,7 @@ public:
     int snake_len() const { return snake_.size(); }
     ge211::Position snake_head() const { return snake_.front(); }
     ge211::Position snake_tail() const { return snake_.back(); }
-
+    std::vector<ge211::Position>& wall_positions() { return wall_positions_; }
 
 private:
     bool good_pos(ge211::Position); // Check if a position is legal.
@@ -53,10 +53,9 @@ private:
     ge211::Position hole_bottom_; //bottom door
     ge211::Position hole_left_; //left door
     ge211::Position hole_right_; //right door
-    ge211::Position door_; //the door after the score has reached
 
     std::vector<ge211::Position> obstacle_positions; //Positions of obstacles
-    std::vector<ge211::Position> wall_positions; //Positions of walls
+    std::vector<ge211::Position> wall_positions_; //Positions of walls
     int score_; //score varies between levels
     bool alive_; // Whether the snake is moving.
 

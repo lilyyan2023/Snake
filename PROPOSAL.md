@@ -51,8 +51,8 @@ The player has 20 seconds to press space to use this skill, otherwise they have 
 10. The scoreboard will update each points the player earns and shows the targeted score at each level. 
 11. There will be 4 holes on the middle of the top, bottom, left, and right edge, as explained in "Gameplay" section. 
 12. There will be 3 levels of difficulty, each with a different speed and a different number of obstacles. 
-13. A "door" would at the lower right corner when the player reaches the target score of the level. Then, the snake_ needs to get in there to truly pass the level. 
-14. A skill to slow down gamespeed will be avaiable to the player once every "cycle", and it will be gone if left unused for a while. 
+13. A "door" would be at the lower right corner when the player reaches the target score of the level. Then, the snake_ needs to get in there to truly pass the level. 
+14. A skill to slow down gamespeed will be available to the player once every "cycle", and it will be gone if left unused for a while. 
 15. The game needs to be started by pressing any key on the keyboard. The player can also press "q" to pause during the game. To resume, the player can again press any button. 
 16. A screen will pop up to indicate "level up!" when the player finishes a level. The player can choose to continue playing another level or replaying this level by pressing different buttons.
 

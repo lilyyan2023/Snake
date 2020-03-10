@@ -12,8 +12,12 @@ UI::UI(const Geometry& geometry)
 { }
 
 void UI::on_key(ge211::Key key) {
-    if (status_ == begin || status_ == pause || status_ == gameover)
+    if (status_ == begin || status_ == pause)
         status_ = gameplay;
+    if (status_ == gameover) {
+        model_ = Model(geometry());
+        status_ = gameplay;
+    }
     // TODO: levelup and stuff
 
     if (status_ == gameplay) {
@@ -89,6 +93,8 @@ void UI::draw_begin(ge211::Sprite_set &set) {
 }
 
 void UI::draw_gameplay(ge211::Sprite_set &set) {
+    for (auto wall : model_.wall_positions())
+        set.add_sprite(wall_sprite, board_to_screen(wall), 0);
     for (auto body : model_.snake()) {
         if (body == model_.snake().back())
             set.add_sprite(tail_sprite,

@@ -51,6 +51,7 @@ private:
 
     ge211::Dimensions grid_dim;
     /// Sprites
+    ge211::Rectangle_sprite wall_sprite{grid_dim, ge211::Color::white()};
     ge211::Rectangle_sprite body_sprite_{grid_dim, ge211::Color::white()};
     ge211::Rectangle_sprite tail_sprite{grid_dim, ge211::Color::medium_red()};
     ge211::Text_sprite title_sprite{"FANCY SNAKE", {"sans.ttf", 55}};

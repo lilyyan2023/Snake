@@ -14,10 +14,16 @@ Model::Model(Geometry  geometry)
 , hole_bottom_ {mid_x(), geometry_.board_dims_.height}
 , hole_left_ {0, mid_y()}
 , hole_right_ {geometry_.board_dims_.width, mid_y()}
-, door_ {geometry_.board_dims_.width, geometry_.board_dims_.height}
 , level_ (1) //more UI manipulation
 {
-    // TODO: wall positions.
+        for (int j = 0; j <= geometry_.board_dims_.height + 1; j++){
+            wall_positions_.emplace_back(0, j);
+            wall_positions_.emplace_back(geometry_.board_dims_.width + 1, j);
+        }
+        for (int i = 1; i <= geometry_.board_dims_.width; i++) {
+            wall_positions_.emplace_back(i, 0);
+            wall_positions_.emplace_back(i, geometry_.board_dims_.height + 1);
+        }
 }
 
 // 1. move and stuff
@@ -27,8 +33,11 @@ void Model::update() {
         snake_.push_front(snake_.front() + dir_);
         // TODO: checking the head's status is enough. You can try the "good_pos" func I wrote, might make it easier.
         // TODO: call eat_apple() somewhere in update
+        if (!eat_apple()){
+            snake_.pop_back();
+        }
         for (ge211::Position s: snake_) {
-            for (ge211::Position w: wall_positions) {
+            for (ge211::Position w: wall_positions_) {
                 if (s == w) {
                     alive_ = false;
                     return;
@@ -43,7 +52,7 @@ void Model::update() {
                 }
             }
         }
-        if (snake_head() == snake_tail()) {
+        if (snake_head() == snake_[snake_len() - 1]) {
             snake_.pop_back();
         }
         for (int i = 1; i < snake_len() - 2; ++i) {
@@ -51,10 +60,6 @@ void Model::update() {
                 alive_ = false;
                 return;
             }
-        }
-        eat_apple();
-        if (!eat_apple()){
-            snake_.pop_back();
         }
     }
 }
