@@ -10,20 +10,24 @@ Model::Model(Geometry  geometry)
 , apple_timer_(5)
 , snake_{{2, mid_y() + 1},{1, mid_y() + 1}}
 , dir_{1,0}
-, hole_top_ {mid_x(),0}
-, hole_bottom_ {mid_x(), geometry_.board_dims_.height}
-, hole_left_ {0, mid_y()}
-, hole_right_ {geometry_.board_dims_.width, mid_y()}
+, hole_top_ {mid_x() + 1,0}
+, hole_bottom_ {mid_x() + 1, geometry_.board_dims_.height}
+, hole_left_ {0, mid_y() + 1}
+, hole_right_ {geometry_.board_dims_.width, mid_y() + 1}
 , level_ (1) //more UI manipulation
 {
     // TODO; holes!
         for (int j = 0; j <= geometry_.board_dims_.height + 1; j++){
-            wall_positions_.emplace_back(0, j);
-            wall_positions_.emplace_back(geometry_.board_dims_.width + 1, j);
+            if (j != mid_y() + 1){
+                wall_positions_.emplace_back(0, j);
+                wall_positions_.emplace_back(geometry_.board_dims_.width + 1, j);
+            }
         }
         for (int i = 1; i <= geometry_.board_dims_.width; i++) {
-            wall_positions_.emplace_back(i, 0);
-            wall_positions_.emplace_back(i, geometry_.board_dims_.height + 1);
+            if (i != mid_x() + 1){
+                wall_positions_.emplace_back(i, 0);
+                wall_positions_.emplace_back(i, geometry_.board_dims_.height + 1);
+            }
         }
 }
 
@@ -35,32 +39,14 @@ void Model::update() {
         if (!eat_apple()){
             snake_.pop_back();
         }
+        alive_ = good_pos(snake_head());
+
         // TODO: do this in the "good_pos" function.
-        for (ge211::Position s: snake_) {
-            for (ge211::Position w: wall_positions_) {
-                if (s == w) {
-                    alive_ = false;
-                    return;
-                }
-            }
-        }
-        for (ge211::Position s: snake_) {
-            for (ge211::Position o: obstacle_positions_) {
-                if (s == o) {
-                    alive_ = false;
-                    return;
-                }
-            }
-        }
+
         if (snake_head() == snake_[snake_len() - 1]) {
             snake_.pop_back();
         }
-        for (int i = 1; i < snake_len() - 2; ++i) {
-            if (snake_head() == snake_[i]){
-                alive_ = false;
-                return;
-            }
-        }
+        turn_hole(snake_head());
     }
 }
 //1. check if the new position eats the apple
@@ -82,17 +68,60 @@ bool Model::eat_apple() {
             score_ = score_ + 6;
         }
     }
-
     return eat;
 }
 //
 
 bool Model::good_pos(const ge211::Position& pos) {
     if (pos.x <= 0 || pos.x > geometry_.board_dims_.width
-        || pos.y <= 0 || pos.y > geometry_.board_dims_.height)
+        || pos.y <= 0 || pos.y > geometry_.board_dims_.height){
         return false;
+    }
+
+    for (ge211::Position w: wall_positions_) {
+        if (pos == w) {
+            return false;
+        }
+    }
+    for (ge211::Position o: obstacle_positions_) {
+        if (pos == o) {
+            return false;
+        }
+    }
+    for (int i = 1; i < snake_len() - 2; ++i) {
+        if (pos == snake_[i]){
+            return false;
+        }
+    }
     return true;
-    //TODO: hits wall, obsticles, or self.
+
+    //TODO: hits wall, obstacles, or self.
+}
+void Model::turn_hole(ge211::Position pos) {
+    Snake snake_swap;
+    if (pos == hole_bottom_) {
+        snake_swap.front() = hole_top_;
+
+        snake_swap.push_front(snake_.front() + dir_);
+        std::swap(snake_,snake_swap);
+    }
+    if (pos == hole_top_) {
+        snake_.front() = hole_bottom_;
+        snake_.push_front(snake_.front() + dir_);
+
+    }
+    if (pos == hole_left_) {
+        snake_.front() = hole_right_;
+        snake_.push_front(snake_.front() + dir_);
+
+    }
+    if (pos == hole_right_) {
+//        snake_swap.front() = hole_top_;
+//        snake_swap.push_front(snake_.front() + dir_);
+//        snake_ = snake_swap;
+        snake_.front() = hole_left_;
+        snake_.push_front(snake_.front() + dir_);
+    }
 }
 
 void Model::level_up() {
