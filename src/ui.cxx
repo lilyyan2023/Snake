@@ -1,6 +1,6 @@
 #include "ui.hxx"
 
-UI::UI(Geometry geometry)
+UI::UI(const Geometry& geometry)
 : model_(geometry)
 , grid_dim{geometry.grid_size, geometry.grid_size}
 , status_(Screen::begin)
@@ -12,10 +12,22 @@ UI::UI(Geometry geometry)
 { }
 
 void UI::on_key(ge211::Key key) {
-    if (status_ == begin || status_ == pause)
+    if (status_ == begin || status_ == pause || status_ == gameover)
         status_ = gameplay;
-    else if (status_ == gameplay && key == ge211::Key::code('q'))
-        status_ = pause;
+    // TODO: levelup and stuff
+
+    if (status_ == gameplay) {
+        if (key == ge211::Key::code('q'))
+            status_ = pause;
+        if (key == ge211::Key::up())
+            model_.turn({0, -1});
+        if (key == ge211::Key::down())
+            model_.turn({0, 1});
+        if (key == ge211::Key::left())
+            model_.turn({-1, 0});
+        if (key == ge211::Key::right())
+            model_.turn({1, 0});
+    }
     //todo: other scenarios like the skill.
 }
 
@@ -36,7 +48,7 @@ void UI::on_frame(double elapsed) {
                 since_last_update = 0;
                 model_.update();
                 update_sprites();
-                if (!model_.alive_)
+                if (!model_.alive())
                     status_ = gameover;
             }
             break;
@@ -54,45 +66,17 @@ void UI::on_frame(double elapsed) {
 }
 
 ge211::Color UI::get_color() {
-    if (model_.level_ == 1) {
-        if (model_.score_ < 20)
-            return ge211::Color::white();
-        if (model_.score_ < 40)
-            return ge211::Color::medium_yellow();
-        if (model_.score_ < 60)
-            return ge211::Color::medium_green();
-        if (model_.score_ < 80)
-            return ge211::Color::medium_blue();
-        if (model_.score_ < 100)
-            return ge211::Color::medium_red();
-        return ge211::Color::medium_magenta();
-    }
-    if (model_.level_ == 2) {
-        if (model_.score_ < 50)
-            return ge211::Color::white();
-        if (model_.score_ < 100)
-            return ge211::Color::medium_yellow();
-        if (model_.score_ < 150)
-            return ge211::Color::medium_green();
-        if (model_.score_ < 200)
-            return ge211::Color::medium_blue();
-        if (model_.score_ < 250)
-            return ge211::Color::medium_red();
-        return ge211::Color::medium_magenta();
-    }
-    if (model_.level_ == 3) {
-        if (model_.score_ < 100)
-            return ge211::Color::white();
-        if (model_.score_ < 200)
-            return ge211::Color::medium_yellow();
-        if (model_.score_ < 300)
-            return ge211::Color::medium_green();
-        if (model_.score_ < 400)
-            return ge211::Color::medium_blue();
-        if (model_.score_ < 500)
-            return ge211::Color::medium_red();
-        return ge211::Color::medium_magenta();
-    }
+    if (model_.score() < geometry().level_score_[model_.level()] / 6)
+        return ge211::Color::white();
+    if (model_.score() < geometry().level_score_[model_.level()] / 6 * 2)
+        return ge211::Color::medium_yellow();
+    if (model_.score() < geometry().level_score_[model_.level()] / 6 * 3)
+        return ge211::Color::medium_green();
+    if (model_.score() < geometry().level_score_[model_.level()] / 6 * 4)
+        return ge211::Color::medium_blue();
+    if (model_.score() < geometry().level_score_[model_.level()] / 6 * 5)
+        return ge211::Color::medium_red();
+    return ge211::Color::medium_magenta();
 }
 
 void UI::draw_begin(ge211::Sprite_set &set) {
@@ -105,8 +89,8 @@ void UI::draw_begin(ge211::Sprite_set &set) {
 }
 
 void UI::draw_gameplay(ge211::Sprite_set &set) {
-    for (auto body : model_.snake_) {
-        if (body == model_.snake_.back())
+    for (auto body : model_.snake()) {
+        if (body == model_.snake().back())
             set.add_sprite(tail_sprite,
                     board_to_screen(body), 2);
         else
@@ -127,6 +111,7 @@ void UI::draw_pause(ge211::Sprite_set &set) {
 }
 
 void UI::draw_levelup(ge211::Sprite_set &set) {
+    // TODO: choose whether to level up or replay
     set.add_sprite(level_up_sprite,
             {geometry().mid_x() - 120,
              geometry().mid_y() - 150}, 1);
@@ -169,6 +154,6 @@ void UI::update_sprites() {
     body_sprite_ = ge211::Rectangle_sprite
             {grid_dim, get_color()};
     score_sprite_1 = ge211::Text_sprite
-            {"score: " + std::to_string(model_.score_)
+            {"score: " + std::to_string(model_.score())
              , {"sans.ttf", 17}};
 }

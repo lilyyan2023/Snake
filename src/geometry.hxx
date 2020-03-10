@@ -16,12 +16,12 @@ public:
     int mid_y() { return window_dims_.height / 2; }
 private:
     ge211::Dimensions board_dims_{41, 27}; // Dimension of the board
-    ge211::Dimensions window_dims_;
+    ge211::Dimensions window_dims_{};
     double update_interval_{0.07};
     int pass_score{400};
     int grid_size{20};
     int space_size{2};
-    std::vector<int> level_score_ = {120, 300, 600};
+    std::vector<int> level_score_ = {0, 120, 300, 600};
 };
 
 #endif

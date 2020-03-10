@@ -7,7 +7,7 @@ enum Screen { gameplay, begin, pause, levelup, gameover }; // For displaying dif
 
 class UI : public ge211::Abstract_game {
 public:
-    explicit UI(Geometry); // Initialize game with given dimensions.
+    explicit UI(const Geometry&); // Initialize game with given dimensions.
 
 protected:
     void draw(ge211::Sprite_set& set) override {
@@ -38,7 +38,7 @@ protected:
 
 private:
     /// Helpers
-    Geometry &geometry() { return model_.geometry_; }
+    Geometry geometry() { return model_.geometry(); }
     ge211::Color get_color(); // Change color based on score.
     void draw_begin(ge211::Sprite_set&); // draw the begin menu
     void draw_gameplay(ge211::Sprite_set&);
@@ -67,7 +67,7 @@ private:
         if (!count_down_) {
             status_ = gameplay;
             //todo: adjust speed with level
-            model_.geometry_.update_interval_ -= 0.015;
+            model_.level_up();
             count_down_ = 3;
         }
         count_down_--;

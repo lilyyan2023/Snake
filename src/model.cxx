@@ -1,7 +1,9 @@
+#include <utility>
+
 #include "model.hxx"
 
-Model::Model(Geometry geometry)
-: geometry_(geometry)
+Model::Model(Geometry  geometry)
+: geometry_(std::move(geometry))
 , apple_{-1,-1}
 , score_(10)
 , alive_(true)
@@ -14,7 +16,9 @@ Model::Model(Geometry geometry)
 , hole_right_ {geometry_.board_dims_.width, mid_y()}
 , door_ {geometry_.board_dims_.width, geometry_.board_dims_.height}
 , level_ (1) //more UI manipulation
-{ }
+{
+    // TODO: wall positions.
+}
 
 // 1. move and stuff
 // 2. check if the new position kills the snake/eats the apple
@@ -49,7 +53,7 @@ void Model::update() {
             }
         }
         eat_apple();
-        if (eat_apple() == false){
+        if (!eat_apple()){
             snake_.pop_back();
         }
     }
@@ -59,25 +63,23 @@ void Model::update() {
 //3. change the body color of the snake
 bool Model::eat_apple() {
     bool eat = false;
-        //level 1 : 120 (subject to change)
-        // TODO: Can store the constants in geometry_ so it's easier to manage.
-        // TODO: Then you don't have to separate the cases.
-        if (snake_head() == apple_) {
-            eat = true;
-            apple_timer_--;
-            apple_ = {0, 0};
-            // TODO: this is the wrong grid to push.
-            snake_.push_back(snake_tail() + dir_);
-            if (apple_timer_ <= 0) {
-                score_ = score_ + 5 + (1/abs(apple_timer_)) * 10 ;
-                apple_timer_ = 5;
-            } else {
-                score_ = score_ + 6;
-            }
+    //level 1 : 120 (subject to change)
+    // TODO: Can store the constants in geometry_ so it's easier to manage.
+    // TODO: Then you don't have to separate the cases.
+
+    if (snake_head() == apple_) {
+        eat = true;
+        apple_timer_--;
+        apple_ = {0, 0};
+        if (apple_timer_ <= 0) {
+            score_ = score_ + 5 + (1/abs(apple_timer_)) * 10 ;
+            apple_timer_ = 5;
+        } else {
+            score_ = score_ + 6;
         }
-        if (score_ >= geometry_.level_score_[level_]){
-            return eat;
-        }
+    }
+
+    return eat;
 }
 //
 
@@ -86,5 +88,11 @@ bool Model::good_pos(ge211::Position pos) {
         || pos.y <= 0 || pos.y > geometry_.board_dims_.height)
         return false;
     //todo: holes, doors, obstacles etc.
+}
+
+void Model::level_up() {
+    // TODO: calibrate speed; choose to stay or continue.
+    level_++;
+    geometry_.update_interval_ -= 0.05;
 }
 
