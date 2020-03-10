@@ -21,7 +21,6 @@ Model::Model(Geometry geometry)
 void Model::update() {
     if (alive_ ) {
         snake_.push_front(snake_.front() + dir_);
-        // TODO: pop_back each time, since the snake is moving forward; EXTRA pop_back if eats tail.
         // TODO: checking the head's status is enough. You can try the "good_pos" func I wrote, might make it easier.
         // TODO: call eat_apple() somewhere in update
         for (ge211::Position s: snake_) {
@@ -43,13 +42,14 @@ void Model::update() {
         if (snake_head() == snake_tail()) {
             snake_.pop_back();
         }
-        // TODO: snake_[0] is just head. This kills the snake.
-        for (int i = 0; i < snake_len() - 2; ++i) {
+        for (int i = 1; i < snake_len() - 2; ++i) {
             if (snake_head() == snake_[i]){
                 alive_ = false;
                 return;
             }
         }
+        eat_apple();
+        snake_.pop_back();
     }
 
 }

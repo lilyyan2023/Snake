@@ -54,17 +54,45 @@ void UI::on_frame(double elapsed) {
 }
 
 ge211::Color UI::get_color() {
-    if (model_.score_ < 100)
-        return ge211::Color::white();
-    if (model_.score_ < 200)
-        return ge211::Color::medium_yellow();
-    if (model_.score_ < 300)
-        return ge211::Color::medium_green();
-    if (model_.score_ < 400)
-        return ge211::Color::medium_blue();
-    if (model_.score_ < 500)
-        return ge211::Color::medium_red();
-    return ge211::Color::medium_magenta();
+    if (model_.level_ == 1) {
+        if (model_.score_ < 20)
+            return ge211::Color::white();
+        if (model_.score_ < 40)
+            return ge211::Color::medium_yellow();
+        if (model_.score_ < 60)
+            return ge211::Color::medium_green();
+        if (model_.score_ < 80)
+            return ge211::Color::medium_blue();
+        if (model_.score_ < 100)
+            return ge211::Color::medium_red();
+        return ge211::Color::medium_magenta();
+    }
+    if (model_.level_ == 2) {
+        if (model_.score_ < 50)
+            return ge211::Color::white();
+        if (model_.score_ < 100)
+            return ge211::Color::medium_yellow();
+        if (model_.score_ < 150)
+            return ge211::Color::medium_green();
+        if (model_.score_ < 200)
+            return ge211::Color::medium_blue();
+        if (model_.score_ < 250)
+            return ge211::Color::medium_red();
+        return ge211::Color::medium_magenta();
+    }
+    if (model_.level_ == 3) {
+        if (model_.score_ < 100)
+            return ge211::Color::white();
+        if (model_.score_ < 200)
+            return ge211::Color::medium_yellow();
+        if (model_.score_ < 300)
+            return ge211::Color::medium_green();
+        if (model_.score_ < 400)
+            return ge211::Color::medium_blue();
+        if (model_.score_ < 500)
+            return ge211::Color::medium_red();
+        return ge211::Color::medium_magenta();
+    }
 }
 
 void UI::draw_begin(ge211::Sprite_set &set) {
