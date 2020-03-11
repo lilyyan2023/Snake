@@ -42,7 +42,7 @@ void UI::on_key(ge211::Key key) {
             if (key == ge211::Key::right())
                 model_.turn({1, 0});
             if (key == ge211::Key::code(' ') && model_.skill_available())
-                model_.use_skill();
+                model_.use_skill(true);
             break;
         case levelup:
             if (key == ge211::Key::code('b')) {

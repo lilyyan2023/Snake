@@ -42,14 +42,22 @@ void Model::update() {
         }
         turn_hole(snake_head());
         alive_ = good_pos(snake_head());
-        // TODO: do this in the "good_pos" function.
-
         if (snake_head() == snake_[snake_len() - 1])
             snake_.pop_back();
     }
     interval_++;
-    if (interval_ > geometry_.skill_interval_ * 2)
+    // 0-interval can use the skill
+    // interval-interval * 2 cannot use the skill
+    // if using it between set interval_ back to 0
+
+    if (interval_ > geometry_.skill_interval_ * 2){
         interval_ = 0;
+    }
+    if (interval_ > geometry_.skill_interval_ && interval_ < geometry_.skill_interval_ * 2){
+        use_skill(false);
+    }
+
+
 }
 //1. check if the new position eats the apple
 //2. increment the score based on the type of the apple the snake eats
@@ -116,7 +124,17 @@ void Model::level_up() {
     geometry_.update_interval_ -= 0.025;
 }
 
-void Model::use_skill() {
-    // TODO: set interval_ to geometry.skill_interval_ + 1 afterwards.
+void Model::use_skill(bool state) {
+     if (state){
+         geometry_.update_interval_ = geometry_.update_interval_*2;
+     }
+     std::cout<<state;
+     if (state == false){
+         geometry_.update_interval_ = geometry_.update_interval_ / 2;
+     }
+
+
+
+    // TODO: set interval_ to geometry.skill_interval_ + 1 afterwards.    space_ship_.control().thrust=state;
 }
 
