@@ -13,5 +13,9 @@ add_program(main
     ${MODEL_SRC})
 target_link_libraries(main ge211)
 
+add_test_program(model_test
+        test/model_test.cxx
+        ${MODEL_SRC})
+target_link_libraries(model_test ge211)
 
 # vim: ft=cmake
