@@ -24,7 +24,8 @@ private:
 
     int apple_score_ = 5;
     int timed_apple_score_ = 30;
-    int skill_interval_ = 80;
+    int skill_interval_ = 50;
+    int skill_time_ = 30;
 };
 
 #endif

@@ -14,7 +14,8 @@ Model::Model(Geometry  geometry)
 , hole_bottom_ {mid_x() + 1, geometry_.board_dims_.height}
 , hole_left_ {0, mid_y() + 1}
 , hole_right_ {geometry_.board_dims_.width, mid_y() + 1}
-, level_ (1) //more UI manipulation
+, level_ (1)
+, skill_timer_ (0)
 {
     // TODO; holes!
     for (int j = 0; j <= geometry_.board_dims_.height + 1; j++){
@@ -53,10 +54,19 @@ void Model::update() {
     if (interval_ > geometry_.skill_interval_ * 2){
         interval_ = 0;
     }
-    if (interval_ > geometry_.skill_interval_ && interval_ < geometry_.skill_interval_ * 2){
-        use_skill(false);
+    if (state == true){
+        skill_timer_ ++;
     }
-
+    if (skill_timer_ > 0){
+        skill_timer_ ++;
+    }
+    if (interval_ > geometry_.skill_interval_ && interval_ < geometry_.skill_interval_ * 2){
+        state = false;
+    }
+    if (skill_timer_ > geometry_.skill_time_ ){
+        geometry_.update_interval_ /= 2;
+        skill_timer_ = 0;
+    }
 
 }
 //1. check if the new position eats the apple
@@ -124,17 +134,11 @@ void Model::level_up() {
     geometry_.update_interval_ -= 0.025;
 }
 
-void Model::use_skill(bool state) {
-     if (state){
+void Model::use_skill(bool state_, int round) {
+    this->state = state_;
+
+     if (state && skill_timer_ < geometry_.skill_time_){
          geometry_.update_interval_ = geometry_.update_interval_*2;
      }
-     std::cout<<state;
-     if (state == false){
-         geometry_.update_interval_ = geometry_.update_interval_ / 2;
-     }
-
-
-
-    // TODO: set interval_ to geometry.skill_interval_ + 1 afterwards.    space_ship_.control().thrust=state;
 }
 

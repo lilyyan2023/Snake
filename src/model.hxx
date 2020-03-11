@@ -37,11 +37,11 @@ public:
     // Helpers
     void level_up();
     Geometry geometry() const { return geometry_; }
-    void use_skill(bool state);
+    void use_skill(bool state, int round);
     void update();
     void turn_hole(ge211::Position pos);
     bool good_pos(const ge211::Position&) const; // Check if OOB, hits obstacle, hits wall, hits self.
-
+    int get_skill_timer() {return skill_timer_;}
 private:
     bool eat_apple();
     int interval_ = 0;
@@ -70,6 +70,8 @@ private:
     Snake snake_;
 
     int level_; //each level corresponds to each number
+    int skill_timer_; //record the amount of time skill is implemented
+    bool state; //whether the game state is activated.
 };
 
 
