@@ -40,12 +40,14 @@ void Model::update() {
         if (!eat_apple()){
             snake_.pop_back();
         }
+        turn_hole(snake_head());
         alive_ = good_pos(snake_head());
         // TODO: do this in the "good_pos" function.
 
         if (snake_head() == snake_[snake_len() - 1])
             snake_.pop_back();
-        turn_hole(snake_head());
+
+
     }
 }
 //1. check if the new position eats the apple
@@ -69,10 +71,6 @@ bool Model::eat_apple() {
 //
 
 bool Model::good_pos(const ge211::Position& pos) const {
-    if (pos.x <= 0 || pos.x > geometry_.board_dims_.width
-        || pos.y <= 0 || pos.y > geometry_.board_dims_.height){
-        return false;
-    }
     for (ge211::Position w: wall_positions_) {
         if (pos == w) {
             return false;
@@ -92,28 +90,18 @@ bool Model::good_pos(const ge211::Position& pos) const {
     //TODO: hits wall, obstacles, or self.
 }
 void Model::turn_hole(ge211::Position pos) {
-    Snake snake_swap;
+
     if (pos == hole_bottom_) {
-        snake_swap.front() = hole_top_;
-        snake_swap.push_front(snake_.front() + dir_);
-        std::swap(snake_,snake_swap);
+        snake_.front() = hole_top_;
     }
     if (pos == hole_top_) {
         snake_.front() = hole_bottom_;
-        snake_.push_front(snake_.front() + dir_);
-
     }
     if (pos == hole_left_) {
         snake_.front() = hole_right_;
-        snake_.push_front(snake_.front() + dir_);
-
     }
-    if (pos == hole_right_) {
-//        snake_swap.front() = hole_top_;
-//        snake_swap.push_front(snake_.front() + dir_);
-//        snake_ = snake_swap;
+    if (pos == hole_right_ + ge211::Dimensions{1,0}) {
         snake_.front() = hole_left_;
-        snake_.push_front(snake_.front() + dir_);
     }
 }
 
