@@ -25,6 +25,7 @@ public:
     ge211::Dimensions board_dims() const { return geometry_.board_dims_; }
     bool good_pos(const ge211::Position&) const; // Check if OOB, hits obstacle, hits wall, hits self.
 
+
     // Helpers
     void level_up();
     void set_snake(Snake& snk) { snake_ = snk; }
@@ -44,6 +45,7 @@ public:
 
 private:
     bool eat_apple();
+    bool skill_available_; //whether the skill is available
 
     Geometry geometry_; // Dimensions of the board.
     ge211::Position apple_; // Position of apple, regular or timed.

@@ -35,6 +35,7 @@ Model::Model(const Geometry& geometry)
 // 2. check if the new position kills the snake/eats the apple
 void Model::update() {
     turned_ = false;
+    int interval = 1;
     if (alive_ ) {
         snake_.push_front(snake_.front() + dir_);
         if (!eat_apple()){
@@ -46,6 +47,10 @@ void Model::update() {
 
         if (snake_head() == snake_[snake_len() - 1])
             snake_.pop_back();
+    }
+    skill_available_ = false;
+    if (interval <= geometry_.skill_interval_){
+        skill_available_ = true;
     }
 }
 //1. check if the new position eats the apple
