@@ -22,6 +22,7 @@ public:
     ge211::Position& apple() { return apple_; }
     int level() const { return level_; }
     void set_snake(Snake& snk) { snake_ = snk; }
+    void set_apple(ge211::Position pos){ apple_ = pos;}
     const Snake& snake() { return snake_; }
     int score() const { return score_; }
     int snake_len() const { return snake_.size(); }
