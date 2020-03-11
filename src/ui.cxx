@@ -30,8 +30,10 @@ void UI::on_key(ge211::Key key) {
             model_.turn({-1, 0});
         if (key == ge211::Key::right())
             model_.turn({1, 0});
+
+        if (key == ge211::Key::code(' ') && model_.skill_available())
+            model_.use_skill();
     }
-    //todo: other scenarios like the skill.
 }
 
 void UI::on_mouse_down(ge211::Mouse_button, ge211::Position) {
@@ -108,7 +110,17 @@ void UI::draw_gameplay(ge211::Sprite_set &set) {
             {2, geometry().window_dims_.height - 48}, 2);
     set.add_sprite(score_sprite_2,
                    {2, geometry().window_dims_.height - 28}, 2);
-    set.add_sprite(apple_sprite, board_to_screen(model_.apple()), 0);
+    set.add_sprite(apple_sprite(), board_to_screen(model_.apple())
+            - apple_sprite_.dimensions() / 2 + grid_dim / 2, 0);
+
+    if (model_.skill_available()) {
+        set.add_sprite(skill_background_sprite,
+                       {geometry().mid_x(),
+                        geometry().window_dims_.height - 38}, 1);
+        set.add_sprite(skill_ready_sprite,
+                       {geometry().mid_x(),
+                        geometry().window_dims_.height - 48}, 2);
+    }
 }
 
 void UI::draw_pause(ge211::Sprite_set &set) {
@@ -138,7 +150,6 @@ void UI::draw_gameover(ge211::Sprite_set &set) {
                    {geometry().mid_x() - 130,
                     geometry().mid_y() + 160}, 11);
 }
-
 
 ge211::Dimensions UI::initial_window_dimensions() const {
     return model_.window_dims();

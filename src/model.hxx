@@ -6,8 +6,7 @@
 class Model {
 public:
     //friend class UI;
-    explicit Model(const Geometry&);
-
+    explicit Model(Geometry );
     // Turn the snake_ to another direction.
     void turn(ge211::Dimensions dir) {
         if (!turned_ && dir != dir_ * -1) {
@@ -16,36 +15,35 @@ public:
         }
     }
     // Advances the snake_, check if dies. Eats apple and grow if possible.
-    void update();
-    void turn_hole(ge211::Position pos);
-    // helpers
     int mid_x() const { return geometry_.board_dims_.width / 2; }
     int mid_y() const { return geometry_.board_dims_.height / 2; }
     ge211::Dimensions window_dims() const { return geometry_.window_dims_; }
     ge211::Dimensions board_dims() const { return geometry_.board_dims_; }
-    bool good_pos(const ge211::Position&) const; // Check if OOB, hits obstacle, hits wall, hits self.
-
-
-    // Helpers
-    void level_up();
-    void set_snake(Snake& snk) { snake_ = snk; }
     ge211::Position& apple() { return apple_; }
     int level() const { return level_; }
+    void set_snake(Snake& snk) { snake_ = snk; }
     const Snake& snake() { return snake_; }
-    Geometry geometry() const { return geometry_; }
-    bool alive() const { return alive_; }
     int score() const { return score_; }
     int snake_len() const { return snake_.size(); }
     const ge211::Position& snake_head() { return snake_.front(); }
     const ge211::Position& snake_tail() { return snake_.back(); }
+    bool alive() const { return alive_; }
+    bool skill_available() { return interval_ < geometry_.skill_interval_; }
     std::vector<ge211::Position>& wall_positions() { return wall_positions_; }
-    std::vector<ge211::Position> wall_positions() const { return wall_positions_; }
     std::vector<ge211::Position>& obstacle_positions() { return obstacle_positions_; }
-    std::vector<ge211::Position> obstacle_positions() const { return obstacle_positions_; }
+    int apple_timer() { return apple_timer_; }
+
+    // Helpers
+    void level_up();
+    Geometry geometry() const { return geometry_; }
+    void use_skill();
+    void update();
+    void turn_hole(ge211::Position pos);
+    bool good_pos(const ge211::Position&) const; // Check if OOB, hits obstacle, hits wall, hits self.
 
 private:
     bool eat_apple();
-    bool skill_available_; //whether the skill is available
+    int interval_ = 0;
 
     Geometry geometry_; // Dimensions of the board.
     ge211::Position apple_; // Position of apple, regular or timed.

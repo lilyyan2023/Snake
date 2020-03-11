@@ -50,11 +50,19 @@ private:
     ge211::Position board_to_screen(ge211::Position);
     bool can_put(const ge211::Position&);
     ge211::Position random_pos();
-
     ge211::Dimensions grid_dim;
+
     /// Sprites
     ge211::Rectangle_sprite wall_sprite{grid_dim, ge211::Color::white()};
-    ge211::Circle_sprite apple_sprite{grid_dim.width / 2, ge211::Color::medium_red()};
+    ge211::Circle_sprite& apple_sprite() {
+        if (model_.apple_timer() > 0)
+            apple_sprite_ = ge211::Circle_sprite{grid_dim.width / 2, ge211::Color::medium_red()};
+        else
+            apple_sprite_ = ge211::Circle_sprite{
+            5 + geometry().timed_apple_score_ + model_.apple_timer(), ge211::Color::medium_red()};
+        return apple_sprite_;
+    }
+    ge211::Circle_sprite apple_sprite_{grid_dim.width / 2, ge211::Color::medium_red()};
     ge211::Rectangle_sprite body_sprite_{grid_dim, ge211::Color::white()};
     ge211::Rectangle_sprite tail_sprite{grid_dim, ge211::Color::medium_red()};
     ge211::Text_sprite title_sprite{"FANCY SNAKE", {"sans.ttf", 55}};
@@ -64,6 +72,9 @@ private:
     ge211::Text_sprite game_over_sprite{"GAME OVER", {"sans.ttf", 55}};
     ge211::Text_sprite score_sprite_1{"score: 10", {"sans.ttf", 17}};
     ge211::Text_sprite score_sprite_2{"next level: 500", {"sans.ttf", 17}};
+    ge211::Text_sprite skill_ready_sprite{"READY", {"sans.ttf", 30}};
+    ge211::Rectangle_sprite skill_background_sprite{{105, 30},
+                                                    ge211::Color::medium_green()};
     // Counting down when leveling up
     int count_down_{3};
     void count_down()
