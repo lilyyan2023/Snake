@@ -57,6 +57,9 @@ void Model::update() {
     if (state){
         skill_timer_ ++;
     }
+    if (skill_timer_ > 0 && state == false){
+        skill_timer_ ++;
+    }
 
     if (interval_ > geometry_.skill_interval_ && interval_ < geometry_.skill_interval_ * 2){
         state = false;
@@ -64,10 +67,11 @@ void Model::update() {
     if (skill_timer_ > geometry_.skill_time_){
         geometry_.update_interval_ /= 2;
         skill_timer_ = 0;
+        interval_ = geometry_.skill_interval_ + 1;
         state = false;
-        std::cout << skill_timer_ <<"\n";
-        std::cout << geometry_.update_interval_ <<" ";
     }
+    std::cout << state <<" ";
+    std::cout << skill_timer_ << " ";
 
 }
 //1. check if the new position eats the apple
