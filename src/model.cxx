@@ -54,18 +54,19 @@ void Model::update() {
     if (interval_ > geometry_.skill_interval_ * 2){
         interval_ = 0;
     }
-    if (state == true){
+    if (state){
         skill_timer_ ++;
     }
-    if (skill_timer_ > 0){
-        skill_timer_ ++;
-    }
+
     if (interval_ > geometry_.skill_interval_ && interval_ < geometry_.skill_interval_ * 2){
         state = false;
     }
-    if (skill_timer_ > geometry_.skill_time_ ){
+    if (skill_timer_ > geometry_.skill_time_){
         geometry_.update_interval_ /= 2;
         skill_timer_ = 0;
+        state = false;
+        std::cout << skill_timer_ <<"\n";
+        std::cout << geometry_.update_interval_ <<" ";
     }
 
 }
