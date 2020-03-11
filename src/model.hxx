@@ -6,7 +6,7 @@
 class Model {
 public:
     //friend class UI;
-    explicit Model(Geometry );
+    explicit Model(Geometry, int level);
     // Turn the snake_ to another direction.
     void turn(ge211::Dimensions dir) {
         if (!turned_ && dir != dir_ * -1) {
@@ -37,11 +37,14 @@ public:
     // Helpers
     void level_up();
     Geometry geometry() const { return geometry_; }
-    void use_skill(bool state, int round);
+    void use_skill(bool state);
     void update();
     void turn_hole(ge211::Position pos);
     bool good_pos(const ge211::Position&) const; // Check if OOB, hits obstacle, hits wall, hits self.
-    int get_skill_timer() {return skill_timer_;}
+    void open_door();
+    bool out_of_door() { return snake_head() == door_position_; }
+    void set_obstacle(ge211::Position);
+    bool using_skill() {return skill_timer_ > 0;}
 private:
     bool eat_apple();
     int interval_ = 0;
@@ -53,6 +56,7 @@ private:
     ge211::Position hole_bottom_; //bottom door
     ge211::Position hole_left_; //left door
     ge211::Position hole_right_; //right door
+    ge211::Position door_position_;
 
     std::vector<ge211::Position> obstacle_positions_; //Positions of obstacles
     std::vector<ge211::Position> wall_positions_; //Positions of walls
@@ -71,7 +75,7 @@ private:
 
     int level_; //each level corresponds to each number
     int skill_timer_; //record the amount of time skill is implemented
-    bool state; //whether the game state is activated.
+    bool state = false; //whether the game state is activated.
 };
 
 

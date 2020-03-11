@@ -5,14 +5,14 @@
 TEST_CASE("initial location of the snake_")
 {
     Geometry geometry;
-    Model m(geometry);
+    Model m(geometry, 1);
     CHECK( m.snake_head() == ge211::Position{2, 14} );
     CHECK( m.snake_len() == 2);
 }
 TEST_CASE("dead when snake_ collides with the edge")
 {
     Geometry geometry;
-    Model m(geometry);
+    Model m(geometry, 1);
     Snake snk = {
             ge211::Position{1, 1},
             ge211::Position{1, 2},
@@ -26,7 +26,7 @@ TEST_CASE("dead when snake_ collides with the edge")
 TEST_CASE("snake_'s length cut off")
 {
     Geometry geometry;
-    Model m(geometry);
+    Model m(geometry, 1);
     Snake snk =
             {{1, 5},
             {1, 4},
@@ -47,7 +47,7 @@ TEST_CASE("snake_'s length cut off")
 TEST_CASE("dead when snake_ collides with its other body parts")
 {
     Geometry geometry;
-    Model m(geometry);
+    Model m(geometry, 1);
     Snake snk =
             {{3,2},
             {4,2},
@@ -64,7 +64,7 @@ TEST_CASE("dead when snake_ collides with its other body parts")
 TEST_CASE("grows when eat an apple")
 {
     Geometry geometry;
-    Model m(geometry);
+    Model m(geometry, 1);
     Snake snk =
             {{1, 3},
             {1, 2},

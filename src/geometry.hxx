@@ -20,11 +20,12 @@ private:
     double update_interval_{0.12};
     int grid_size{20};
     int space_size{2};
-    std::vector<int> level_score_ = {0, 240, 600, 900};
+    std::vector<int> level_score_ = {0, 60, 120, 180};
+    std::vector<int> obstacle_number_ = {0, 1, 3, 6};
 
     int apple_score_ = 5;
-    int timed_apple_score_ = 30;
-    int skill_interval_ = 50;
+    int timed_apple_score_ = 40;
+    int skill_interval_ = 80;
     int skill_time_ = 30;
 };
 

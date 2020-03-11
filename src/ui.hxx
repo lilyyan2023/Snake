@@ -42,6 +42,7 @@ protected:
 private:
     /// Helpers
     Geometry geometry() { return model_.geometry(); }
+    int level() { return model_.level(); }
     ge211::Color get_color(); // Change color based on score.
     void draw_begin(ge211::Sprite_set&); // draw the begin menu
     void draw_gameplay(ge211::Sprite_set&);
@@ -55,6 +56,9 @@ private:
     bool can_put(const ge211::Position&);
     ge211::Position random_pos();
     ge211::Dimensions grid_dim;
+    ge211::Dimensions board_dims() { return model_.board_dims(); }
+    ge211::Dimensions window_dims() { return model_.window_dims(); }
+    void set_obstacles();
 
     /// Sprites
     ge211::Rectangle_sprite wall_sprite{grid_dim, ge211::Color::white()};
@@ -63,10 +67,12 @@ private:
             apple_sprite_ = ge211::Circle_sprite{grid_dim.width / 2, ge211::Color::medium_red()};
         else
             apple_sprite_ = ge211::Circle_sprite{
-            5 + geometry().timed_apple_score_ + model_.apple_timer(), ge211::Color::medium_red()};
+            5 + geometry().timed_apple_score_ - geometry().timed_apple_score_ / 2 + model_.apple_timer() / 2, ge211::Color::medium_red()};
         return apple_sprite_;
     }
     ge211::Circle_sprite apple_sprite_{grid_dim.width / 2, ge211::Color::medium_red()};
+    ge211::Rectangle_sprite obstacle_sprite_{grid_dim, ge211::Color::white().blend(0.5,
+            ge211::Color::black())};
     ge211::Rectangle_sprite body_sprite_{grid_dim, ge211::Color::white()};
     ge211::Rectangle_sprite tail_sprite{grid_dim, ge211::Color::medium_red()};
     ge211::Text_sprite title_sprite{"FANCY SNAKE", {"sans.ttf", 55}};
@@ -77,8 +83,10 @@ private:
     ge211::Text_sprite score_sprite_1;
     ge211::Text_sprite score_sprite_2;
     ge211::Text_sprite skill_ready_sprite{"READY", {"sans.ttf", 30}};
-    ge211::Rectangle_sprite skill_background_sprite{{105, 30},
+    ge211::Rectangle_sprite ready_background_sprite{{105, 30},
                                                     ge211::Color::medium_green()};
+    ge211::Rectangle_sprite using_background_sprite{{105, 30},
+                                                    ge211::Color::medium_red()};
     ge211::Text_sprite restart_sprite{"press \'b\' to restart", {"sans.ttf", 30}};
     ge211::Text_sprite advance_sprite{"press \'n\' to advance", {"sans.ttf", 30}};
     // Counting down when leveling up

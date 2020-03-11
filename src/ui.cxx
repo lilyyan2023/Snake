@@ -1,7 +1,7 @@
 #include "ui.hxx"
 
 UI::UI(const Geometry& geometry)
-: model_(geometry)
+: model_{geometry, 1}
 , grid_dim{geometry.grid_size, geometry.grid_size}
 , status_(begin)
 , since_last_update(0)
@@ -10,6 +10,7 @@ UI::UI(const Geometry& geometry)
 , steel_curtain{geometry.window_dims_,
                 ge211::Color::from_rgba(0.4, 0.1, 0.1, 0.3)}
 {
+    set_obstacles();
     score_sprite_1 = ge211::Text_sprite
             {"score: " + std::to_string(model_.score())
              , {"sans.ttf", 17}};
@@ -26,7 +27,8 @@ void UI::on_key(ge211::Key key) {
             break;
         case gameover:
             if (key == ge211::Key::code('b')) {
-                model_ = Model(geometry());
+                model_ = Model(geometry(), model_.level());
+                set_obstacles();
                 status_ = gameplay;
             }
             break;
@@ -42,14 +44,17 @@ void UI::on_key(ge211::Key key) {
             if (key == ge211::Key::right())
                 model_.turn({1, 0});
             if (key == ge211::Key::code(' ') && model_.skill_available())
-                model_.use_skill(true, 1);
+                model_.use_skill(true);
             break;
         case levelup:
             if (key == ge211::Key::code('b')) {
-                model_ = Model(geometry());
+                model_ = Model(geometry(), model_.level());
+                set_obstacles();
                 status_ = gameplay;
             }
             if (key == ge211::Key::code('n')) {
+                model_ = Model(geometry(), model_.level() + 1);
+                set_obstacles();
                 status_ = countdown;
             }
             break;
@@ -75,6 +80,8 @@ void UI::on_frame(double elapsed) {
                     status_ = gameover;
                 if (model_.apple() == ge211::Position{-1,-1})
                     model_.apple() = random_pos();
+                if (model_.out_of_door())
+                    status_ = levelup;
             }
             break;
         case countdown:
@@ -116,6 +123,8 @@ void UI::draw_begin(ge211::Sprite_set &set) {
 void UI::draw_gameplay(ge211::Sprite_set &set) {
     for (auto wall : model_.wall_positions())
         set.add_sprite(wall_sprite, board_to_screen(wall), 0);
+    for (auto o : model_.obstacle_positions())
+        set.add_sprite(obstacle_sprite_, board_to_screen(o), 0);
     for (auto body : model_.snake()) {
         if (body == model_.snake().back())
             set.add_sprite(tail_sprite,
@@ -125,19 +134,23 @@ void UI::draw_gameplay(ge211::Sprite_set &set) {
                            board_to_screen(body), 1);
     }
     set.add_sprite(score_sprite_1,
-            {2, geometry().window_dims_.height - 48}, 2);
+            {2, window_dims().height - 48}, 2);
     set.add_sprite(score_sprite_2,
-                   {2, geometry().window_dims_.height - 28}, 2);
+                   {2, window_dims().height - 28}, 2);
     set.add_sprite(apple_sprite(), board_to_screen(model_.apple())
             - apple_sprite_.dimensions() / 2 + grid_dim / 2, 0);
-
-    if (model_.skill_available()) {
-        set.add_sprite(skill_background_sprite,
+    if (model_.skill_available() || model_.using_skill()) {
+        if (model_.using_skill())
+            set.add_sprite(using_background_sprite,
                        {geometry().mid_x(),
-                        geometry().window_dims_.height - 38}, 1);
+                        window_dims().height - 38}, 1);
+        else
+            set.add_sprite(ready_background_sprite,
+                          {geometry().mid_x(),
+                           window_dims().height - 38}, 1);
         set.add_sprite(skill_ready_sprite,
                        {geometry().mid_x(),
-                        geometry().window_dims_.height - 48}, 2);
+                        window_dims().height - 48}, 2);
     }
 }
 
@@ -180,7 +193,6 @@ void UI::draw_levelup(ge211::Sprite_set &set) {
     set.add_sprite(advance_sprite,
                    {geometry().mid_x() - 120,
                     geometry().mid_y() + 200}, 11);
-    // TODO: things
 }
 
 ge211::Dimensions UI::initial_window_dimensions() const {
@@ -213,7 +225,7 @@ void UI::update_sprites() {
 }
 
 bool UI::can_put(const ge211::Position& pos) {
-    if (pos == model_.snake_head() || pos == model_.snake_tail())
+    if (pos == model_.snake_head() || pos == model_.snake_tail() || pos == model_.apple())
         return false;
     return model_.good_pos(pos);
 }
@@ -221,8 +233,14 @@ bool UI::can_put(const ge211::Position& pos) {
 ge211::Position UI::random_pos() {
     ge211::Position pos{-1,-1};
     do
-        pos = {get_random().between(1, model_.board_dims().width)
-                , get_random().between(1, model_.board_dims().height)};
+        pos = {get_random().between(1, board_dims().width),
+               get_random().between(1, board_dims().height)};
     while (!can_put(pos));
     return pos;
 }
+
+void UI::set_obstacles() {
+    for (int i = 0; i < geometry().obstacle_number_[level()]; i++)
+        model_.set_obstacle(random_pos());
+}
+

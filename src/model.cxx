@@ -2,7 +2,7 @@
 
 #include "model.hxx"
 
-Model::Model(Geometry  geometry)
+Model::Model(Geometry geometry, int level)
 : geometry_(std::move(geometry))
 , apple_{-1, -1}
 , score_(10)
@@ -11,13 +11,13 @@ Model::Model(Geometry  geometry)
 , snake_{{2, mid_y() + 1},{1, mid_y() + 1}}
 , dir_{1,0}
 , hole_top_ {mid_x() + 1,0}
-, hole_bottom_ {mid_x() + 1, geometry_.board_dims_.height}
+, hole_bottom_ {mid_x() + 1, geometry_.board_dims_.height + 1}
 , hole_left_ {0, mid_y() + 1}
-, hole_right_ {geometry_.board_dims_.width, mid_y() + 1}
-, level_ (1)
+, hole_right_ {geometry_.board_dims_.width + 1, mid_y() + 1}
+, level_ {level} //more UI manipulation
+, door_position_{-1,-1}
 , skill_timer_ (0)
 {
-    // TODO; holes!
     for (int j = 0; j <= geometry_.board_dims_.height + 1; j++){
         if (j != mid_y() + 1){
             wall_positions_.emplace_back(0, j);
@@ -41,38 +41,30 @@ void Model::update() {
         if (!eat_apple()){
             snake_.pop_back();
         }
+        if (level_ != 3 && score_ >= geometry_.level_score_[level_])
+            open_door();
         turn_hole(snake_head());
         alive_ = good_pos(snake_head());
         if (snake_head() == snake_[snake_len() - 1])
             snake_.pop_back();
     }
     interval_++;
+    if (interval_ > geometry_.skill_interval_ * 2) {
+        interval_ = 0;
+    }
     // 0-interval can use the skill
     // interval-interval * 2 cannot use the skill
     // if using it between set interval_ back to 0
 
-    if (interval_ > geometry_.skill_interval_ * 2){
-        interval_ = 0;
-    }
-    if (state){
+    if (state || skill_timer_ > 0) {
         skill_timer_ ++;
     }
-    if (skill_timer_ > 0 && state == false){
-        skill_timer_ ++;
-    }
-
-    if (interval_ > geometry_.skill_interval_ && interval_ < geometry_.skill_interval_ * 2){
-        state = false;
-    }
-    if (skill_timer_ > geometry_.skill_time_){
+    if (skill_timer_ > geometry_.skill_time_) {
         geometry_.update_interval_ /= 2;
         skill_timer_ = 0;
         interval_ = geometry_.skill_interval_ + 1;
         state = false;
     }
-    std::cout << state <<" ";
-    std::cout << skill_timer_ << " ";
-
 }
 //1. check if the new position eats the apple
 //2. increment the score based on the type of the apple the snake eats
@@ -84,15 +76,15 @@ bool Model::eat_apple() {
         apple_ = {-1, -1};
         if (apple_timer_ <= 0) {
             score_ += geometry_.timed_apple_score_ + apple_timer_;
-            apple_timer_ = geometry_.apple_score_;
+            apple_timer_ = 5;
         } else {
             score_ += geometry_.apple_score_;
         }
         apple_timer_--;
     } else if (apple_timer_ <= 0) {
         apple_timer_--;
-        if (apple_timer_ <= -1 * geometry_.timed_apple_score_) {
-            apple_timer_ = geometry_.apple_score_;
+        if (apple_timer_ <= -1 * geometry_.timed_apple_score_ + 5) {
+            apple_timer_ = 5;
             apple_ = {-1, -1};
         }
     }
@@ -117,7 +109,6 @@ bool Model::good_pos(const ge211::Position& pos) const {
         }
     }
     return true;
-    //TODO: hits wall, obstacles, or self.
 }
 void Model::turn_hole(ge211::Position pos) {
     if (pos == hole_bottom_ + ge211::Dimensions{0,2}) {
@@ -139,11 +130,28 @@ void Model::level_up() {
     geometry_.update_interval_ -= 0.025;
 }
 
-void Model::use_skill(bool state_, int round) {
-    this->state = state_;
-
+void Model::use_skill(bool state_) {
+    state = state_;
      if (state && skill_timer_ < geometry_.skill_time_){
          geometry_.update_interval_ = geometry_.update_interval_*2;
      }
+}
+
+void Model::open_door() {
+    door_position_ = {board_dims().width, board_dims().height + 1};
+    for (auto &wall : wall_positions_)
+        if (wall == door_position_) {
+            std::swap(wall, wall_positions_.back());
+            wall_positions_.pop_back();
+        }
+    wall_positions_.push_back(door_position_ + ge211::Dimensions{-1,1});
+    wall_positions_.push_back(door_position_ + ge211::Dimensions{1,1});
+    wall_positions_.push_back(door_position_ + ge211::Dimensions{-1,2});
+    wall_positions_.push_back(door_position_ + ge211::Dimensions{1,2});
+    door_position_ += ge211::Dimensions{0, 2};
+}
+
+void Model::set_obstacle(ge211::Position pos) {
+    obstacle_positions_.push_back(pos);
 }
 
