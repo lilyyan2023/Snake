@@ -3,46 +3,64 @@
 UI::UI(const Geometry& geometry)
 : model_(geometry)
 , grid_dim{geometry.grid_size, geometry.grid_size}
-, status_(Screen::begin)
+, status_(begin)
 , since_last_update(0)
 , iron_curtain{geometry.window_dims_,
                ge211::Color::from_rgba(0.1, 0.4, 0.1, 0.3)}
 , steel_curtain{geometry.window_dims_,
                 ge211::Color::from_rgba(0.4, 0.1, 0.1, 0.3)}
-{ }
+{
+    score_sprite_1 = ge211::Text_sprite
+            {"score: " + std::to_string(model_.score())
+             , {"sans.ttf", 17}};
+    score_sprite_2 = ge211::Text_sprite
+            {"next level: " + std::to_string(model_.geometry().level_score_[model_.level()])
+                    , {"sans.ttf", 17}};
+}
 
 void UI::on_key(ge211::Key key) {
-    if (status_ == begin || status_ == pause)
-        status_ = gameplay;
-    if (status_ == gameover) {
-        model_ = Model(geometry());
-        status_ = gameplay;
-    }
-    // TODO: levelup and stuff
-    if (status_ == gameplay) {
-        if (key == ge211::Key::code('q'))
-            status_ = pause;
-        if (key == ge211::Key::up())
-            model_.turn({0, -1});
-        if (key == ge211::Key::down())
-            model_.turn({0, 1});
-        if (key == ge211::Key::left())
-            model_.turn({-1, 0});
-        if (key == ge211::Key::right())
-            model_.turn({1, 0});
-
-        if (key == ge211::Key::code(' ') && model_.skill_available())
-            model_.use_skill();
+    switch (status_) {
+        case begin:
+        case pause:
+            status_ = gameplay;
+            break;
+        case gameover:
+            if (key == ge211::Key::code('b')) {
+                model_ = Model(geometry());
+                status_ = gameplay;
+            }
+            break;
+        case gameplay:
+            if (key == ge211::Key::code('q'))
+                status_ = pause;
+            if (key == ge211::Key::up())
+                model_.turn({0, -1});
+            if (key == ge211::Key::down())
+                model_.turn({0, 1});
+            if (key == ge211::Key::left())
+                model_.turn({-1, 0});
+            if (key == ge211::Key::right())
+                model_.turn({1, 0});
+            if (key == ge211::Key::code(' ') && model_.skill_available())
+                model_.use_skill();
+            break;
+        case levelup:
+            if (key == ge211::Key::code('b')) {
+                model_ = Model(geometry());
+                status_ = gameplay;
+            }
+            if (key == ge211::Key::code('n')) {
+                status_ = countdown;
+            }
+            break;
+        default:
+            break;
     }
 }
 
 void UI::on_mouse_down(ge211::Mouse_button, ge211::Position) {
     if (status_ == begin || status_ == pause)
         status_ = gameplay;
-    if (status_ == gameover) {
-        model_ = Model(geometry());
-        status_ = gameplay;
-    }
 }
 
 void UI::on_frame(double elapsed) {
@@ -59,7 +77,7 @@ void UI::on_frame(double elapsed) {
                     model_.apple() = random_pos();
             }
             break;
-        case levelup:
+        case countdown:
             since_last_update += elapsed;
             if (since_last_update >= 1) {
                 since_last_update = 0;
@@ -130,10 +148,9 @@ void UI::draw_pause(ge211::Sprite_set &set) {
                                   geometry().mid_y() - 150}, 11);
 }
 
-void UI::draw_levelup(ge211::Sprite_set &set) {
-    // TODO: choose whether to level up or replay
+void UI::draw_countdown(ge211::Sprite_set &set) {
     set.add_sprite(level_up_sprite,
-            {geometry().mid_x() - 120,
+            {geometry().mid_x() - 110,
              geometry().mid_y() - 150}, 1);
     set.add_sprite(count_down_sprite(),
                    {geometry().mid_x() - 20,
@@ -146,9 +163,24 @@ void UI::draw_gameover(ge211::Sprite_set &set) {
     set.add_sprite(game_over_sprite,
             {geometry().mid_x() - 175,
              geometry().mid_y() - 150}, 11);
-    set.add_sprite(press_key_sprite,
-                   {geometry().mid_x() - 130,
+    set.add_sprite(restart_sprite,
+                   {geometry().mid_x() - 110,
                     geometry().mid_y() + 160}, 11);
+}
+
+void UI::draw_levelup(ge211::Sprite_set &set) {
+    draw_gameplay(set);
+    set.add_sprite(iron_curtain, {0,0}, 10);
+    set.add_sprite(level_up_sprite,
+                   {geometry().mid_x() - 110,
+                    geometry().mid_y() - 150}, 11);
+    set.add_sprite(restart_sprite,
+                   {geometry().mid_x() - 110,
+                    geometry().mid_y() + 160}, 11);
+    set.add_sprite(advance_sprite,
+                   {geometry().mid_x() - 120,
+                    geometry().mid_y() + 200}, 11);
+    // TODO: things
 }
 
 ge211::Dimensions UI::initial_window_dimensions() const {
@@ -175,6 +207,9 @@ void UI::update_sprites() {
     score_sprite_1 = ge211::Text_sprite
             {"score: " + std::to_string(model_.score())
              , {"sans.ttf", 17}};
+    score_sprite_2 = ge211::Text_sprite
+            {"next level: " + std::to_string(model_.geometry().level_score_[model_.level()])
+                    , {"sans.ttf", 17}};
 }
 
 bool UI::can_put(const ge211::Position& pos) {

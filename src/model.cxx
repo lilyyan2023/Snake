@@ -88,7 +88,7 @@ bool Model::good_pos(const ge211::Position& pos) const {
             return false;
         }
     }
-    for (int i = 1; i < snake_len() - 2; ++i) {
+    for (int i = 1; i < snake_len() - 1; ++i) {
         if (pos == snake_[i]){
             return false;
         }
@@ -112,12 +112,11 @@ void Model::turn_hole(ge211::Position pos) {
 }
 
 void Model::level_up() {
-    // TODO: calibrate speed; choose to stay or continue.
     level_++;
-    geometry_.update_interval_ -= 0.05;
+    geometry_.update_interval_ -= 0.025;
 }
 
 void Model::use_skill() {
-    // TODO: set interval_ to geometry.skill_interval_ + 1
+    // TODO: set interval_ to geometry.skill_interval_ + 1 afterwards.
 }
 

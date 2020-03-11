@@ -3,7 +3,7 @@
 
 #include "model.hxx"
 
-enum Screen { gameplay, begin, pause, levelup, gameover }; // For displaying different screens in UI.
+enum Screen { gameplay, begin, pause, countdown, gameover, levelup }; // For displaying different screens in UI.
 
 class UI : public ge211::Abstract_game {
 public:
@@ -21,11 +21,14 @@ protected:
             case pause:
                 draw_pause(set);
                 break;
-            case levelup:
-                draw_levelup(set);
+            case countdown:
+                draw_countdown(set);
                 break;
             case gameover:
                 draw_gameover(set);
+                break;
+            case levelup:
+                draw_levelup(set);
                 break;
         }
     }
@@ -43,8 +46,9 @@ private:
     void draw_begin(ge211::Sprite_set&); // draw the begin menu
     void draw_gameplay(ge211::Sprite_set&);
     void draw_pause(ge211::Sprite_set&);
-    void draw_levelup(ge211::Sprite_set&);
+    void draw_countdown(ge211::Sprite_set&);
     void draw_gameover(ge211::Sprite_set&);
+    void draw_levelup(ge211::Sprite_set&);
     void update_sprites();
     ge211::Position screen_to_board(ge211::Position);
     ge211::Position board_to_screen(ge211::Position);
@@ -70,11 +74,13 @@ private:
     ge211::Text_sprite pause_sprite{"PAUSE", {"sans.ttf", 55}};
     ge211::Text_sprite level_up_sprite{"Level up!", {"sans.ttf", 55}};
     ge211::Text_sprite game_over_sprite{"GAME OVER", {"sans.ttf", 55}};
-    ge211::Text_sprite score_sprite_1{"score: 10", {"sans.ttf", 17}};
-    ge211::Text_sprite score_sprite_2{"next level: 500", {"sans.ttf", 17}};
+    ge211::Text_sprite score_sprite_1;
+    ge211::Text_sprite score_sprite_2;
     ge211::Text_sprite skill_ready_sprite{"READY", {"sans.ttf", 30}};
     ge211::Rectangle_sprite skill_background_sprite{{105, 30},
                                                     ge211::Color::medium_green()};
+    ge211::Text_sprite restart_sprite{"press \'b\' to restart", {"sans.ttf", 30}};
+    ge211::Text_sprite advance_sprite{"press \'n\' to advance", {"sans.ttf", 30}};
     // Counting down when leveling up
     int count_down_{3};
     void count_down()
