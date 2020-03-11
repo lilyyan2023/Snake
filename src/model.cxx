@@ -126,7 +126,6 @@ void Model::turn_hole(ge211::Position pos) {
 }
 
 void Model::level_up() {
-    level_++;
     geometry_.update_interval_ -= 0.025;
 }
 
