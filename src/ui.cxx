@@ -54,7 +54,7 @@ void UI::on_frame(double elapsed) {
                 if (!model_.alive())
                     status_ = gameover;
                 if (model_.apple() == ge211::Position{-1,-1})
-                    model_.set_apple(random_pos());
+                    model_.apple() = random_pos();
             }
             break;
         case levelup:

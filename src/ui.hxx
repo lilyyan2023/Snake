@@ -11,7 +11,7 @@ public:
 
 protected:
     void draw(ge211::Sprite_set& set) override {
-        switch (status_){
+        switch (status_) {
             case begin:
                 draw_begin(set);
                 break;
@@ -70,7 +70,6 @@ private:
     {
         if (!count_down_) {
             status_ = gameplay;
-            //todo: adjust speed with level
             model_.level_up();
             count_down_ = 3;
         }

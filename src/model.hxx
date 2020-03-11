@@ -6,7 +6,7 @@
 class Model {
 public:
     //friend class UI;
-    explicit Model(Geometry );
+    explicit Model(const Geometry&);
 
     // Turn the snake_ to another direction.
     void turn(ge211::Dimensions dir) {
@@ -28,8 +28,8 @@ public:
     // Helpers
     void level_up();
     void set_snake(Snake& snk) { snake_ = snk; }
-    ge211::Position apple() const { return apple_; }
-    void set_apple(const ge211::Position& pos) { apple_ = pos; }
+    ge211::Position& apple() { return apple_; }
+    // TODO: if this not useful, can delete it.
     void set_holes()
     {
         hole_top_ = {mid_x(),0};
@@ -38,15 +38,17 @@ public:
         hole_right_ = {geometry_.board_dims_.width, mid_y()};
     }
     int level() const { return level_; }
-    Snake& snake() { return snake_; }
-    Geometry &geometry() { return geometry_; }
+    const Snake& snake() { return snake_; }
+    Geometry geometry() const { return geometry_; }
     bool alive() const { return alive_; }
     int score() const { return score_; }
     int snake_len() const { return snake_.size(); }
-    ge211::Position snake_head() const { return snake_.front(); }
-    ge211::Position snake_tail() const { return snake_.back(); }
+    const ge211::Position& snake_head() { return snake_.front(); }
+    const ge211::Position& snake_tail() { return snake_.back(); }
     std::vector<ge211::Position>& wall_positions() { return wall_positions_; }
+    std::vector<ge211::Position> wall_positions() const { return wall_positions_; }
     std::vector<ge211::Position>& obstacle_positions() { return obstacle_positions_; }
+    std::vector<ge211::Position> obstacle_positions() const { return obstacle_positions_; }
 
 private:
     bool eat_apple();

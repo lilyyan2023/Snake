@@ -2,7 +2,7 @@
 
 #include "model.hxx"
 
-Model::Model(Geometry  geometry)
+Model::Model(const Geometry& geometry)
 : geometry_(std::move(geometry))
 , apple_{-1, -1}
 , score_(10)
@@ -41,12 +41,10 @@ void Model::update() {
             snake_.pop_back();
         }
         alive_ = good_pos(snake_head());
-
         // TODO: do this in the "good_pos" function.
 
-        if (snake_head() == snake_[snake_len() - 1]) {
+        if (snake_head() == snake_[snake_len() - 1])
             snake_.pop_back();
-        }
         turn_hole(snake_head());
     }
 }
@@ -55,9 +53,6 @@ void Model::update() {
 //3. change the body color of the snake
 bool Model::eat_apple() {
     bool eat = false;
-    //level 1 : 120 (subject to change)
-    // TODO: Can store the constants in geometry_ so it's easier to manage.
-    // TODO: Then you don't have to separate the cases.
     if (snake_head() == apple_) {
         eat = true;
         apple_timer_--;
@@ -78,7 +73,6 @@ bool Model::good_pos(const ge211::Position& pos) const {
         || pos.y <= 0 || pos.y > geometry_.board_dims_.height){
         return false;
     }
-
     for (ge211::Position w: wall_positions_) {
         if (pos == w) {
             return false;
@@ -95,14 +89,12 @@ bool Model::good_pos(const ge211::Position& pos) const {
         }
     }
     return true;
-
     //TODO: hits wall, obstacles, or self.
 }
 void Model::turn_hole(ge211::Position pos) {
     Snake snake_swap;
     if (pos == hole_bottom_) {
         snake_swap.front() = hole_top_;
-
         snake_swap.push_front(snake_.front() + dir_);
         std::swap(snake_,snake_swap);
     }
