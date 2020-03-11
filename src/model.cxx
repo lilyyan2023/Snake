@@ -17,18 +17,18 @@ Model::Model(const Geometry& geometry)
 , level_ (1) //more UI manipulation
 {
     // TODO; holes!
-    for (int j = 0; j <= geometry_.board_dims_.height + 1; j++){
-        if (j != mid_y() + 1){
-            wall_positions_.emplace_back(0, j);
-            wall_positions_.emplace_back(geometry_.board_dims_.width + 1, j);
+        for (int j = 0; j <= geometry_.board_dims_.height + 1; j++){
+            if (j != mid_y() + 1){
+                wall_positions_.emplace_back(0, j);
+                wall_positions_.emplace_back(geometry_.board_dims_.width + 1, j);
+            }
         }
-    }
-    for (int i = 1; i <= geometry_.board_dims_.width; i++) {
-        if (i != mid_x() + 1){
-            wall_positions_.emplace_back(i, 0);
-            wall_positions_.emplace_back(i, geometry_.board_dims_.height + 1);
+        for (int i = 1; i <= geometry_.board_dims_.width; i++) {
+            if (i != mid_x() + 1){
+                wall_positions_.emplace_back(i, 0);
+                wall_positions_.emplace_back(i, geometry_.board_dims_.height + 1);
+            }
         }
-    }
 }
 
 // 1. move and stuff
@@ -41,12 +41,12 @@ void Model::update() {
         if (!eat_apple()){
             snake_.pop_back();
         }
-        turn_hole(snake_head());
         alive_ = good_pos(snake_head());
         // TODO: do this in the "good_pos" function.
 
         if (snake_head() == snake_[snake_len() - 1])
             snake_.pop_back();
+        turn_hole(snake_head());
     }
     skill_available_ = false;
     if (interval <= geometry_.skill_interval_){
@@ -60,19 +60,13 @@ bool Model::eat_apple() {
     bool eat = false;
     if (snake_head() == apple_) {
         eat = true;
+        apple_timer_--;
         apple_ = {-1, -1};
         if (apple_timer_ <= 0) {
-            score_ += geometry_.timed_apple_score_ + apple_timer_;
-            apple_timer_ = geometry_.apple_score_;
+            score_ = score_ + 5 + (1/abs(apple_timer_)) * 10 ;
+            apple_timer_ = 5;
         } else {
-            score_ += geometry_.apple_score_;
-        }
-        apple_timer_--;
-    } else if (apple_timer_ <= 0) {
-        apple_timer_--;
-        if (apple_timer_ <= -1 * geometry_.timed_apple_score_) {
-            apple_timer_ = geometry_.apple_score_;
-            apple_ = {-1, -1};
+            score_ = score_ + 6;
         }
     }
     return eat;
@@ -80,6 +74,10 @@ bool Model::eat_apple() {
 //
 
 bool Model::good_pos(const ge211::Position& pos) const {
+    if (pos.x <= 0 || pos.x > geometry_.board_dims_.width
+        || pos.y <= 0 || pos.y > geometry_.board_dims_.height){
+        return false;
+    }
     for (ge211::Position w: wall_positions_) {
         if (pos == w) {
             return false;
@@ -99,18 +97,28 @@ bool Model::good_pos(const ge211::Position& pos) const {
     //TODO: hits wall, obstacles, or self.
 }
 void Model::turn_hole(ge211::Position pos) {
-
-    if (pos == hole_bottom_ + ge211::Dimensions{0,2}) {
-        snake_.front() = hole_top_;
+    Snake snake_swap;
+    if (pos == hole_bottom_) {
+        snake_swap.front() = hole_top_;
+        snake_swap.push_front(snake_.front() + dir_);
+        std::swap(snake_,snake_swap);
     }
-    if (pos == hole_top_ + ge211::Dimensions{0,-1}) {
+    if (pos == hole_top_) {
         snake_.front() = hole_bottom_;
+        snake_.push_front(snake_.front() + dir_);
+
     }
-    if (pos == hole_left_ + ge211::Dimensions{-1, 0}) {
+    if (pos == hole_left_) {
         snake_.front() = hole_right_;
+        snake_.push_front(snake_.front() + dir_);
+
     }
-    if (pos == hole_right_ + ge211::Dimensions{2,0}) {
+    if (pos == hole_right_) {
+//        snake_swap.front() = hole_top_;
+//        snake_swap.push_front(snake_.front() + dir_);
+//        snake_ = snake_swap;
         snake_.front() = hole_left_;
+        snake_.push_front(snake_.front() + dir_);
     }
 }
 
