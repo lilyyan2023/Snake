@@ -10,8 +10,10 @@ public:
 
     // Turn the snake_ to another direction.
     void turn(ge211::Dimensions dir) {
-        if (dir_ + dir != ge211::Dimensions {0,0})
+        if (!turned_ && dir_ != dir * -1) {
             dir_ = dir;
+            turned_ = true;
+        }
     }
     // Advances the snake_, check if dies. Eats apple and grow if possible.
     void update();
@@ -21,12 +23,12 @@ public:
     int mid_y() const { return geometry_.board_dims_.height / 2; }
     ge211::Dimensions window_dims() const { return geometry_.window_dims_; }
     ge211::Dimensions board_dims() const { return geometry_.board_dims_; }
-    bool good_pos(const ge211::Position&); // Check if OOB, hits obstacle, hits wall, hits self.
+    bool good_pos(const ge211::Position&) const; // Check if OOB, hits obstacle, hits wall, hits self.
 
     // Helpers
     void level_up();
     void set_snake(Snake& snk) { snake_ = snk; }
-    ge211::Position apple() { return apple_; }
+    ge211::Position apple() const { return apple_; }
     void set_apple(const ge211::Position& pos) { apple_ = pos; }
     void set_holes()
     {
@@ -35,7 +37,7 @@ public:
         hole_left_ = {0, mid_y()};
         hole_right_ = {geometry_.board_dims_.width, mid_y()};
     }
-    int level() { return level_; }
+    int level() const { return level_; }
     Snake& snake() { return snake_; }
     Geometry &geometry() { return geometry_; }
     bool alive() const { return alive_; }
@@ -61,6 +63,7 @@ private:
     std::vector<ge211::Position> wall_positions_; //Positions of walls
     int score_; //score varies between levels
     bool alive_; // Whether the snake is moving.
+    bool turned_; // In case it turns more than once/round.
 
     // Starts at 5 and decreases each time. When reaches 0, timed apple appears,
     // apple_timer continues to decrease every round to calculate time penalty.

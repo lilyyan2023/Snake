@@ -34,6 +34,7 @@ Model::Model(Geometry  geometry)
 // 1. move and stuff
 // 2. check if the new position kills the snake/eats the apple
 void Model::update() {
+    turned_ = false;
     if (alive_ ) {
         snake_.push_front(snake_.front() + dir_);
         if (!eat_apple()){
@@ -72,7 +73,7 @@ bool Model::eat_apple() {
 }
 //
 
-bool Model::good_pos(const ge211::Position& pos) {
+bool Model::good_pos(const ge211::Position& pos) const {
     if (pos.x <= 0 || pos.x > geometry_.board_dims_.width
         || pos.y <= 0 || pos.y > geometry_.board_dims_.height){
         return false;
