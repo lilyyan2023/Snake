@@ -21,6 +21,9 @@ private:
     int grid_size{20};
     int space_size{2};
     std::vector<int> level_score_ = {0, 240, 600, 900};
+
+    int apple_score_ = 5;
+    int timed_apple_score_ = 30;
 };
 
 #endif

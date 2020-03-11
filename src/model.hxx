@@ -10,7 +10,7 @@ public:
 
     // Turn the snake_ to another direction.
     void turn(ge211::Dimensions dir) {
-        if (!turned_ && dir_ != dir * -1) {
+        if (!turned_ && dir != dir_ * -1) {
             dir_ = dir;
             turned_ = true;
         }
@@ -29,14 +29,6 @@ public:
     void level_up();
     void set_snake(Snake& snk) { snake_ = snk; }
     ge211::Position& apple() { return apple_; }
-    // TODO: if this not useful, can delete it.
-    void set_holes()
-    {
-        hole_top_ = {mid_x(),0};
-        hole_bottom_ = {mid_x(), geometry_.board_dims_.height};
-        hole_left_ = {0, mid_y()};
-        hole_right_ = {geometry_.board_dims_.width, mid_y()};
-    }
     int level() const { return level_; }
     const Snake& snake() { return snake_; }
     Geometry geometry() const { return geometry_; }
@@ -65,12 +57,12 @@ private:
     std::vector<ge211::Position> wall_positions_; //Positions of walls
     int score_; //score varies between levels
     bool alive_; // Whether the snake is moving.
-    bool turned_; // In case it turns more than once/round.
 
     // Starts at 5 and decreases each time. When reaches 0, timed apple appears,
     // apple_timer continues to decrease every round to calculate time penalty.
     // After timed apple is eaten/has disappeared, reset apple_timer to 5.
     int apple_timer_;
+    bool turned_ = false;
 
     // The snake, stored as a ring buffer. ge211::Positions are default
     // initialized to {-1,-1}.
