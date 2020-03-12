@@ -7,7 +7,7 @@ Model::Model(Geometry geometry, int level)
 , apple_{-1, -1}
 , score_(10)
 , alive_(true)
-, apple_timer_(5)
+, apple_timer_(4)
 , snake_{{2, mid_y() + 1},{1, mid_y() + 1}}
 , dir_{1,0}
 , hole_top_ {mid_x() + 1,0}
