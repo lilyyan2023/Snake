@@ -44,7 +44,7 @@ public:
     bool out_of_door() { return snake_head() == door_position_; }
     void set_obstacle(ge211::Position);
     bool using_skill() {return skill_timer_ > 0;}
-    RingBuffer<Position>& get_snake_positions() { return snake_;}
+    void set_dir(ge211::Dimensions d){ dir_ = d;}
 private:
     bool eat_apple();
     int interval_ = 0;

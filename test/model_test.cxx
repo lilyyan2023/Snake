@@ -143,3 +143,39 @@ TEST_CASE("get into top hole")
     m.update();
     CHECK( m.snake() == Snake{{21,28}, {21,0}});
 }
+TEST_CASE("get into bottom hole")
+{
+    Model m(Geometry(), 3);
+    Snake snk =
+            {{21, 27},
+             {21, 26}};
+    m.set_snake(snk);
+    m.turn({0, 1});
+    m.update();
+    m.update();
+    CHECK( m.snake() == Snake{{21,0}, {21,28}});
+}
+TEST_CASE("get into left hole")
+{
+    Model m(Geometry(), 3);
+    Snake snk =
+            {{1, m.mid_y()+1},
+             {2, m.mid_y()+1}};
+    m.set_snake(snk);
+    m.set_dir({-1,0});
+    m.update();
+    m.update();
+    CHECK( m.snake() == Snake{{42,m.mid_y()+1}, {0,m.mid_y()+1}});
+}
+TEST_CASE("get into right hole")
+{
+    Model m(Geometry(), 3);
+    Snake snk =
+            {{41, m.mid_y()+1},
+             {40, m.mid_y()+1}};
+    m.set_snake(snk);
+    m.set_dir({1,0});
+    m.update();
+    m.update();
+    CHECK( m.snake() == Snake{{0,m.mid_y()+1}, {42,m.mid_y()+1}});
+}
