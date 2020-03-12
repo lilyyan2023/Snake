@@ -45,8 +45,10 @@ void Model::update() {
             open_door();
         turn_hole(snake_head());
         alive_ = good_pos(snake_head());
-        if (snake_head() == snake_[snake_len() - 1])
+        if (snake_head() == snake_[snake_len() - 1]) {
+            score_ -= 5;
             snake_.pop_back();
+        }
     }
     interval_++;
     if (interval_ > geometry_.skill_interval_ * 2) {
