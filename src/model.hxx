@@ -37,7 +37,7 @@ public:
     // Helpers
     void level_up();
     Geometry geometry() const { return geometry_; }
-    void use_skill(bool state);
+    void use_skill();
     void update();
     void turn_hole(ge211::Position pos);
     bool good_pos(const ge211::Position&) const; // Check if OOB, hits obstacle, hits wall, hits self.

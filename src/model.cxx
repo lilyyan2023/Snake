@@ -3,7 +3,7 @@
 #include "model.hxx"
 
 Model::Model(Geometry geometry, int level)
-: geometry_(std::move(geometry))
+: geometry_(geometry)
 , apple_{-1, -1}
 , score_(10)
 , alive_(true)
@@ -41,7 +41,7 @@ void Model::update() {
         if (!eat_apple()){
             snake_.pop_back();
         }
-        if (level_ != 3 && score_ >= geometry_.level_score_[level_])
+        if (level_ != 3 && score_ >= Geometry::level_score(level_))
             open_door();
         turn_hole(snake_head());
         alive_ = good_pos(snake_head());
@@ -58,9 +58,10 @@ void Model::update() {
 
     if (state || skill_timer_ > 0) {
         skill_timer_ ++;
+        geometry_.skill_factor_ = 2;
     }
     if (skill_timer_ > geometry_.skill_time_) {
-        geometry_.update_interval_ /= 2;
+        geometry_.skill_factor_ = 1;
         skill_timer_ = 0;
         interval_ = geometry_.skill_interval_ + 1;
         state = false;
@@ -126,17 +127,16 @@ void Model::turn_hole(ge211::Position pos) {
 }
 
 void Model::level_up() {
-    geometry_.update_interval_ -= 0.025;
+    //geometry_.update_interval_ -= 0.015;
 }
 
-void Model::use_skill(bool state_) {
-    state = state_;
-     if (state && skill_timer_ < geometry_.skill_time_){
-         geometry_.update_interval_ = geometry_.update_interval_*2;
-     }
+void Model::use_skill() {
+    state = true;
 }
 
 void Model::open_door() {
+    if (door_position_ != ge211::Position{-1,-1})
+        return;
     door_position_ = {board_dims().width, board_dims().height + 1};
     for (auto &wall : wall_positions_)
         if (wall == door_position_) {

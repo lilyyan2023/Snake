@@ -14,19 +14,20 @@ public:
     }
     int mid_x() const { return window_dims_.width / 2; }
     int mid_y() const { return window_dims_.height / 2; }
+    static int level_score(int n) { return 90 * n; }
+    static int obstacle_number(int n) { return 2 * n + 1; }
+    double update_interval(int n) { return (0.13 - n * 0.01) * skill_factor_; }
 private:
     ge211::Dimensions board_dims_{41, 27}; // Dimension of the board
     ge211::Dimensions window_dims_{};
-    double update_interval_{0.12};
     int grid_size{20};
     int space_size{2};
-    std::vector<int> level_score_ = {0, 60, 120, 180};
-    std::vector<int> obstacle_number_ = {0, 1, 3, 6};
 
     int apple_score_ = 5;
     int timed_apple_score_ = 40;
     int skill_interval_ = 80;
     int skill_time_ = 30;
+    int skill_factor_ = 1;
 };
 
 #endif

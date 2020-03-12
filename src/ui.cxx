@@ -15,7 +15,7 @@ UI::UI(const Geometry& geometry)
             {"score: " + std::to_string(model_.score())
              , {"sans.ttf", 17}};
     score_sprite_2 = ge211::Text_sprite
-            {"next level: " + std::to_string(model_.geometry().level_score_[model_.level()])
+            {"next level: " + std::to_string(Geometry::level_score(level()))
                     , {"sans.ttf", 17}};
 }
 
@@ -27,7 +27,7 @@ void UI::on_key(ge211::Key key) {
             break;
         case gameover:
             if (key == ge211::Key::code('b')) {
-                model_ = Model(geometry(), model_.level());
+                model_ = Model(geometry(), level());
                 set_obstacles();
                 status_ = gameplay;
             }
@@ -44,16 +44,16 @@ void UI::on_key(ge211::Key key) {
             if (key == ge211::Key::right())
                 model_.turn({1, 0});
             if (key == ge211::Key::code(' ') && model_.skill_available())
-                model_.use_skill(true);
+                model_.use_skill();
             break;
         case levelup:
             if (key == ge211::Key::code('b')) {
-                model_ = Model(geometry(), model_.level());
+                model_ = Model(geometry(), level());
                 set_obstacles();
                 status_ = gameplay;
             }
             if (key == ge211::Key::code('n')) {
-                model_ = Model(geometry(), model_.level() + 1);
+                model_ = Model(geometry(), level() + 1);
                 set_obstacles();
                 status_ = countdown;
             }
@@ -72,7 +72,7 @@ void UI::on_frame(double elapsed) {
     switch (status_) {
         case gameplay:
             since_last_update += elapsed;
-            if (since_last_update >= geometry().update_interval_) {
+            if (since_last_update >= geometry().update_interval(level())) {
                 since_last_update = 0;
                 model_.update();
                 update_sprites();
@@ -98,15 +98,15 @@ void UI::on_frame(double elapsed) {
 }
 
 ge211::Color UI::get_color() {
-    if (model_.score() < geometry().level_score_[model_.level()] / 6)
+    if (model_.score() < Geometry::level_score(level()) / 6)
         return ge211::Color::white();
-    if (model_.score() < geometry().level_score_[model_.level()] / 6 * 2)
+    if (model_.score() < Geometry::level_score(level()) / 6 * 2)
         return ge211::Color::medium_yellow();
-    if (model_.score() < geometry().level_score_[model_.level()] / 6 * 3)
+    if (model_.score() < Geometry::level_score(level()) / 6 * 3)
         return ge211::Color::medium_green();
-    if (model_.score() < geometry().level_score_[model_.level()] / 6 * 4)
+    if (model_.score() < Geometry::level_score(level()) / 6 * 4)
         return ge211::Color::medium_blue();
-    if (model_.score() < geometry().level_score_[model_.level()] / 6 * 5)
+    if (model_.score() < Geometry::level_score(level()) / 6 * 5)
         return ge211::Color::medium_red();
     return ge211::Color::medium_magenta();
 }
@@ -220,7 +220,7 @@ void UI::update_sprites() {
             {"score: " + std::to_string(model_.score())
              , {"sans.ttf", 17}};
     score_sprite_2 = ge211::Text_sprite
-            {"next level: " + std::to_string(model_.geometry().level_score_[model_.level()])
+            {"next level: " + std::to_string(Geometry::level_score(level()))
                     , {"sans.ttf", 17}};
 }
 
@@ -240,7 +240,7 @@ ge211::Position UI::random_pos() {
 }
 
 void UI::set_obstacles() {
-    for (int i = 0; i < geometry().obstacle_number_[level()]; i++)
+    for (int i = 0; i < Geometry::obstacle_number(level()); i++)
         model_.set_obstacle(random_pos());
 }
 
