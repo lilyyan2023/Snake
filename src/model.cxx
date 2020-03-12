@@ -87,7 +87,7 @@ bool Model::eat_apple() {
     } else if (apple_timer_ <= 0) {
         apple_timer_--;
         if (apple_timer_ <= -1 * geometry_.timed_apple_score_ + 5) {
-            apple_timer_ = 5;
+            apple_timer_ = 4;
             apple_ = {-1, -1};
         }
     }
