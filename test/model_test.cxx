@@ -117,7 +117,8 @@ TEST_CASE("use the skill")
     Geometry geometry;
     Model m(geometry, 3);
     m.use_skill();
-    m.
+    m.update();
+    CHECK( geometry.update_interval(3) == 0.2);
 
 }
 
