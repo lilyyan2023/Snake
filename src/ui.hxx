@@ -93,11 +93,11 @@ private:
     int count_down_{3};
     void count_down()
     {
+        count_down_--;
         if (!count_down_) {
             status_ = gameplay;
             count_down_ = 3;
         }
-        count_down_--;
     }
     // Drawing that countdown
     ge211::Text_sprite count_down_sprite_;

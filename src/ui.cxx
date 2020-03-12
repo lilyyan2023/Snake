@@ -88,7 +88,6 @@ void UI::on_frame(double elapsed) {
             since_last_update += elapsed;
             if (since_last_update >= 1) {
                 since_last_update = 0;
-                // 3 seconds
                 count_down();
             }
             break;
