@@ -4,15 +4,13 @@
 
 TEST_CASE("initial location of the snake_")
 {
-    Geometry geometry;
-    Model m(geometry, 1);
+    Model m(Geometry(), 1);
     CHECK( m.snake_head() == ge211::Position{2, 14} );
     CHECK( m.snake_len() == 2);
 }
 TEST_CASE("dead when snake_ collides with the edge")
 {
-    Geometry geometry;
-    Model m(geometry, 1);
+    Model m(Geometry(), 1);
     Snake snk = {
             ge211::Position{1, 1},
             ge211::Position{1, 2},
@@ -26,8 +24,7 @@ TEST_CASE("dead when snake_ collides with the edge")
 TEST_CASE("snake_'s length cut off")
 {
     //favorite test 1
-    Geometry geometry;
-    Model m(geometry, 1);
+    Model m(Geometry(), 1);
     Snake snk =
             {{1, 5},
             {1, 4},
@@ -47,8 +44,7 @@ TEST_CASE("snake_'s length cut off")
 }
 TEST_CASE("dead when snake_ collides with its other body parts")
 {
-    Geometry geometry;
-    Model m(geometry, 1);
+    Model m(Geometry(), 1);
     Snake snk =
             {{3,2},
             {4,2},
@@ -64,8 +60,7 @@ TEST_CASE("dead when snake_ collides with its other body parts")
 }
 TEST_CASE("grows when eat a normal apple")
 {
-    Geometry geometry;
-    Model m(geometry, 1);
+    Model m(Geometry(), 1);
     Snake snk =
             {{1, 3},
             {1, 2},
@@ -80,8 +75,7 @@ TEST_CASE("grows when eat a normal apple")
 }
 TEST_CASE("score grows more when eat a timed apple")
 { //Test case 2
-    Geometry geometry;
-    Model m(geometry, 1);
+    Model m(Geometry(), 1);
     Snake snk =
             {{1, 3},
              {1, 2}};
@@ -120,8 +114,7 @@ TEST_CASE("score grows more when eat a timed apple")
 }
 TEST_CASE("dead when snake collides with obstacles")
 {//TEST CASE 3
-    Geometry geometry;
-    Model m(geometry, 1);
+    Model m(Geometry(), 1);
     Snake snk =
             {{1, 3},
              {1, 2}};
@@ -133,24 +126,20 @@ TEST_CASE("dead when snake collides with obstacles")
 }
 TEST_CASE("use the skill")
 {//TEST CASE 4
-    Geometry geometry;
-    Model m(geometry, 3);
+    Model m(Geometry(), 3);
     m.use_skill();
     m.update();
-    CHECK( geometry.update_interval(3) == 0.2);
-
+    CHECK( m.geometry().update_interval(3) == 0.2);
 }
 TEST_CASE("get into top hole")
 {//TEST CASE 5
-    Geometry geometry;
-    Model m(geometry, 3);
+    Model m(Geometry(), 3);
     Snake snk =
-            {{21, 2},
-             {21, 1}};
+            {{21, 1},
+             {21, 2}};
     m.set_snake(snk);
     m.turn({0, -1});
     m.update();
-    Snake& snake = m.snake();
-    CHECK(snake == Snake {{21,28}, {21,0}});
-
+    m.update();
+    CHECK( m.snake() == Snake{{21,28}, {21,0}});
 }

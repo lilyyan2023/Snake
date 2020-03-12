@@ -188,12 +188,6 @@ public:
     }
 };
 
-template <typename T>
-std::ostream& operator<<(std::ostream & os, RingBuffer<T> rb) {
-    for (uint i = 0; i < rb.size(); i++)
-        os << rb[i] << " ";
-    return os;
-}
 
 ///
 /// Added for ge211::Position's default construction
