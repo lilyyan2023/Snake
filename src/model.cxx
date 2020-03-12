@@ -114,7 +114,7 @@ bool Model::good_pos(const ge211::Position& pos) const {
     return true;
 }
 void Model::turn_hole(ge211::Position pos) {
-    if (pos == hole_bottom_ + ge211::Dimensions{0,2}) {
+    if (pos == hole_bottom_ + ge211::Dimensions{0,1}) {
         snake_.front() = hole_top_;
     }
     if (pos == hole_top_ + ge211::Dimensions{0,-1}) {
@@ -123,7 +123,7 @@ void Model::turn_hole(ge211::Position pos) {
     if (pos == hole_left_ + ge211::Dimensions{-1, 0}) {
         snake_.front() = hole_right_;
     }
-    if (pos == hole_right_ + ge211::Dimensions{2,0}) {
+    if (pos == hole_right_ + ge211::Dimensions{1,0}) {
         snake_.front() = hole_left_;
     }
 }
