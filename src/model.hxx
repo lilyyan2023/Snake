@@ -35,7 +35,6 @@ public:
     int apple_timer() { return apple_timer_; }
 
     // Helpers
-    void level_up();
     Geometry geometry() const { return geometry_; }
     void use_skill();
     void update();

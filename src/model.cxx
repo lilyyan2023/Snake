@@ -128,10 +128,6 @@ void Model::turn_hole(ge211::Position pos) {
     }
 }
 
-void Model::level_up() {
-    //geometry_.update_interval_ -= 0.015;
-}
-
 void Model::use_skill() {
     state = true;
 }

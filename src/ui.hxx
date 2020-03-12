@@ -95,7 +95,6 @@ private:
     {
         if (!count_down_) {
             status_ = gameplay;
-            model_.level_up();
             count_down_ = 3;
         }
         count_down_--;

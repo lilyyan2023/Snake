@@ -110,7 +110,7 @@ TEST_CASE("dead when snake collides with obstacles")
     m.turn({0, 1});
     m.set_obstacle({1,4});
     m.update();
-    CHECK(m.alive() == false);
+    CHECK( !m.alive() );
 }
 TEST_CASE("use the skill")
 {//TEST CASE 4
