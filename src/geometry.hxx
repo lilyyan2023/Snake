@@ -15,7 +15,7 @@ public:
     int mid_x() const { return window_dims_.width / 2; }
     int mid_y() const { return window_dims_.height / 2; }
     static int level_score(int n) { return 90 * n; }
-    static int obstacle_number(int n) { return 2 * n + 1; }
+    static int obstacle_number(int n) { return 3 * n - 2; }
     double update_interval(int n) { return (0.13 - n * 0.01) * skill_factor_; }
 private:
     ge211::Dimensions board_dims_{41, 27}; // Dimension of the board
