@@ -78,10 +78,10 @@ bool Model::eat_apple() {
         eat = true;
         apple_ = {-1, -1};
         if (apple_timer_ <= 0) {
-            score_ += geometry_.timed_apple_score_ + apple_timer_;
+            score_ += geometry_.timed_apple_score_ + apple_timer_ + 5;
             apple_timer_ = 5;
         } else {
-            score_ += geometry_.apple_score_;
+            score_ += geometry_.apple_score_ + 5;
         }
         apple_timer_--;
     } else if (apple_timer_ <= 0) {

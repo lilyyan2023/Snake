@@ -45,6 +45,7 @@ public:
     bool out_of_door() { return snake_head() == door_position_; }
     void set_obstacle(ge211::Position);
     bool using_skill() {return skill_timer_ > 0;}
+    void set_score(int n){score_ = n;}
 private:
     bool eat_apple();
     int interval_ = 0;
