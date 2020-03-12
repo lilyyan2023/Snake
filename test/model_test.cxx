@@ -93,11 +93,30 @@ TEST_CASE("score grows more when eat a timed apple")
     m.update();
     CHECK( m.snake_len() == 3);
     CHECK( m.score() == m.snake_len() * 5 + 5);
+
     m.turn({1,0});
     m.set_apple({2,4});
     m.update();
     CHECK( m.snake_len() == 4);
     CHECK( m.score() == m.snake_len() * 5 + 5 * 2);
+
+    m.turn({1,0});
+    m.set_apple({3,4});
+    m.update();
+    CHECK( m.snake_len() == 5);
+    CHECK( m.score() == m.snake_len() * 5 + 5 * 3);
+
+    m.turn({0,-1});
+    m.set_apple({3,3});
+    m.update();
+    CHECK( m.snake_len() == 6);
+    CHECK( m.score() == m.snake_len() * 5 + 5 * 4);
+
+    m.turn({0,-1});
+    m.set_apple({3,2});
+    m.update();
+    CHECK( m.snake_len() == 7);
+    CHECK( m.score() == m.snake_len() * 5 + 5 * 4 + 40);
 }
 TEST_CASE("dead when snake collides with obstacles")
 {//TEST CASE 3
@@ -121,4 +140,17 @@ TEST_CASE("use the skill")
     CHECK( geometry.update_interval(3) == 0.2);
 
 }
+TEST_CASE("get into top hole")
+{//TEST CASE 5
+    Geometry geometry;
+    Model m(geometry, 3);
+    Snake snk =
+            {{21, 2},
+             {21, 1}};
+    m.set_snake(snk);
+    m.turn({0, -1});
+    m.update();
+    Snake& snake = m.snake();
+    CHECK(snake == Snake {{21,28}, {21,0}});
 
+}

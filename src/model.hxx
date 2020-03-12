@@ -23,7 +23,7 @@ public:
     int level() const { return level_; }
     void set_snake(Snake& snk) { snake_ = snk; }
     void set_apple(ge211::Position pos){ apple_ = pos;}
-    const Snake& snake() { return snake_; }
+    Snake& snake() { return snake_; }
     int score() const { return score_; }
     int snake_len() const { return snake_.size(); }
     const ge211::Position& snake_head() { return snake_.front(); }
@@ -44,6 +44,7 @@ public:
     bool out_of_door() { return snake_head() == door_position_; }
     void set_obstacle(ge211::Position);
     bool using_skill() {return skill_timer_ > 0;}
+    RingBuffer<Position>& get_snake_positions() { return snake_;}
 private:
     bool eat_apple();
     int interval_ = 0;
