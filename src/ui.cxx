@@ -1,6 +1,6 @@
 #include "ui.hxx"
 
-UI::UI(Geometry geometry, int lev)
+UI::UI(const Geometry& geometry, int lev)
 : model_{geometry, lev}
 , grid_dim{geometry.grid_size, geometry.grid_size}
 , status_(begin)
@@ -218,9 +218,14 @@ void UI::update_sprites() {
     score_sprite_1 = ge211::Text_sprite
             {"score: " + std::to_string(model_.score())
              , {"sans.ttf", 17}};
-    score_sprite_2 = ge211::Text_sprite
+    if (level() != 3)
+        score_sprite_2 = ge211::Text_sprite
             {"next level: " + std::to_string(Geometry::level_score(level()))
                     , {"sans.ttf", 17}};
+    else
+        score_sprite_2 = ge211::Text_sprite
+                {"next level: N/A"
+                        , {"sans.ttf", 17}};
 }
 
 bool UI::can_put(const ge211::Position& pos) {
