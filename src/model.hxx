@@ -5,44 +5,39 @@
 
 class Model {
 public:
-    //friend class UI;
     explicit Model(Geometry, int level);
-    // Turn the snake_ to another direction.
-    void turn(ge211::Dimensions dir) {
-        if (!turned_ && dir != dir_ * -1) {
-            dir_ = dir;
-            turned_ = true;
-        }
-    }
-    // Advances the snake_, check if dies. Eats apple and grow if possible.
-    int mid_x() const { return geometry_.board_dims_.width / 2; }
-    int mid_y() const { return geometry_.board_dims_.height / 2; }
+
     ge211::Dimensions window_dims() const { return geometry_.window_dims_; }
     ge211::Dimensions board_dims() const { return geometry_.board_dims_; }
-    ge211::Position& apple() { return apple_; }
+    const ge211::Position& apple() { return apple_; }
     int level() const { return level_; }
-    void set_snake(Snake& snk) { snake_ = snk; }
-    void set_apple(ge211::Position pos){ apple_ = pos;}
-    Snake& snake() { return snake_; }
+    const Snake& snake() { return snake_; }
     int score() const { return score_; }
     int snake_len() const { return snake_.size(); }
-    const ge211::Position& snake_head() { return snake_.front(); }
-    const ge211::Position& snake_tail() { return snake_.back(); }
+    ge211::Position snake_head() const { return snake_.front(); }
+    ge211::Position snake_tail() const { return snake_.back(); }
     bool alive() const { return alive_; }
-    bool skill_available() { return interval_ < geometry_.skill_interval_; }
-    std::vector<ge211::Position>& wall_positions() { return wall_positions_; }
-    std::vector<ge211::Position>& obstacle_positions() { return obstacle_positions_; }
-    int apple_timer() { return apple_timer_; }
+    bool skill_available() const { return interval_ < geometry_.skill_interval_; }
+    const std::vector<ge211::Position>& wall_positions()
+    { return wall_positions_; }
+    const std::vector<ge211::Position>& obstacle_positions()
+    { return obstacle_positions_; }
+    int apple_timer() const { return apple_timer_; }
 
-    // Helpers
-    Geometry geometry() const { return geometry_; }
-    void use_skill();
+    bool good_pos(const ge211::Position&) const;
+    int mid_x() const { return geometry_.board_dims_.width / 2; }
+    int mid_y() const { return geometry_.board_dims_.height / 2; }
+
+    void set_snake(Snake& snk) { snake_ = snk; }
+    void set_apple(ge211::Position pos) { apple_ = pos;}
+    void turn(ge211::Dimensions dir);
+    const Geometry& geometry() { return geometry_; }
+    void use_skill() { state = true; }
     void update();
     void turn_hole(ge211::Position pos);
-    bool good_pos(const ge211::Position&) const; // Check if OOB, hits obstacle, hits wall, hits self.
     void open_door();
     bool out_of_door() { return snake_head() == door_position_; }
-    void set_obstacle(ge211::Position);
+    void set_obstacle(const ge211::Position&);
     bool using_skill() {return skill_timer_ > 0;}
     void set_dir(ge211::Dimensions d){ dir_ = d;}
 private:

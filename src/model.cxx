@@ -14,7 +14,7 @@ Model::Model(Geometry geometry, int level)
 , hole_bottom_ {mid_x() + 1, geometry_.board_dims_.height + 1}
 , hole_left_ {0, mid_y() + 1}
 , hole_right_ {geometry_.board_dims_.width + 1, mid_y() + 1}
-, level_ {level} //more UI manipulation
+, level_ {level}
 , door_position_{-1,-1}
 , skill_timer_ (0)
 {
@@ -32,8 +32,13 @@ Model::Model(Geometry geometry, int level)
     }
 }
 
-// 1. move and stuff
-// 2. check if the new position kills the snake/eats the apple
+void Model::turn(ge211::Dimensions dir) {
+    if (!turned_ && dir != dir_ * -1) {
+        dir_ = dir;
+        turned_ = true;
+    }
+}
+
 void Model::update() {
     turned_ = false;
     if (alive_ ) {
@@ -69,9 +74,7 @@ void Model::update() {
         state = false;
     }
 }
-//1. check if the new position eats the apple
-//2. increment the score based on the type of the apple the snake eats
-//3. change the body color of the snake
+
 bool Model::eat_apple() {
     bool eat = false;
     if (snake_head() == apple_) {
@@ -93,7 +96,6 @@ bool Model::eat_apple() {
     }
     return eat;
 }
-//
 
 bool Model::good_pos(const ge211::Position& pos) const {
     for (ge211::Position w: wall_positions_) {
@@ -113,6 +115,7 @@ bool Model::good_pos(const ge211::Position& pos) const {
     }
     return true;
 }
+
 void Model::turn_hole(ge211::Position pos) {
     if (pos == hole_bottom_ + ge211::Dimensions{0,1}) {
         snake_.front() = hole_top_;
@@ -126,10 +129,6 @@ void Model::turn_hole(ge211::Position pos) {
     if (pos == hole_right_ + ge211::Dimensions{1,0}) {
         snake_.front() = hole_left_;
     }
-}
-
-void Model::use_skill() {
-    state = true;
 }
 
 void Model::open_door() {
@@ -148,7 +147,6 @@ void Model::open_door() {
     door_position_ += ge211::Dimensions{0, 2};
 }
 
-void Model::set_obstacle(ge211::Position pos) {
+void Model::set_obstacle(const ge211::Position& pos) {
     obstacle_positions_.push_back(pos);
 }
-

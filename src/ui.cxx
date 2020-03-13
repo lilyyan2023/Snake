@@ -79,7 +79,7 @@ void UI::on_frame(double elapsed) {
                 if (!model_.alive())
                     status_ = gameover;
                 if (model_.apple() == ge211::Position{-1,-1})
-                    model_.apple() = random_pos();
+                    model_.set_apple(random_pos());
                 if (model_.out_of_door())
                     status_ = levelup;
             }
@@ -224,7 +224,8 @@ void UI::update_sprites() {
 }
 
 bool UI::can_put(const ge211::Position& pos) {
-    if (pos == model_.snake_head() || pos == model_.snake_tail() || pos == model_.apple())
+    if (pos == model_.snake_head() || pos == model_.snake_tail()
+    || pos == model_.apple())
         return false;
     return model_.good_pos(pos);
 }

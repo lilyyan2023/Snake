@@ -3,7 +3,7 @@
 
 #include "model.hxx"
 
-enum Screen { gameplay, begin, pause, countdown, gameover, levelup }; // For displaying different screens in UI.
+enum Screen { gameplay, begin, pause, countdown, gameover, levelup };
 
 class UI : public ge211::Abstract_game {
 public:
@@ -64,31 +64,38 @@ private:
     ge211::Rectangle_sprite wall_sprite{grid_dim, ge211::Color::white()};
     ge211::Circle_sprite& apple_sprite() {
         if (model_.apple_timer() > 0)
-            apple_sprite_ = ge211::Circle_sprite{grid_dim.width / 2, ge211::Color::medium_red()};
+            apple_sprite_ = ge211::Circle_sprite
+                    {grid_dim.width / 2, ge211::Color::medium_red()};
         else
-            apple_sprite_ = ge211::Circle_sprite{
-            5 + geometry().timed_apple_score_ - geometry().timed_apple_score_ / 2 + model_.apple_timer() / 2, ge211::Color::medium_red()};
+            apple_sprite_ = ge211::Circle_sprite
+                    {5 + geometry().timed_apple_score_ / 2 +
+                     model_.apple_timer() / 2, ge211::Color::medium_red()};
         return apple_sprite_;
     }
-    ge211::Circle_sprite apple_sprite_{grid_dim.width / 2, ge211::Color::medium_red()};
-    ge211::Rectangle_sprite obstacle_sprite_{grid_dim, ge211::Color::white().blend(0.5,
+    ge211::Circle_sprite apple_sprite_
+    {grid_dim.width / 2, ge211::Color::medium_red()};
+    ge211::Rectangle_sprite obstacle_sprite_
+    {grid_dim, ge211::Color::white().blend(0.5,
             ge211::Color::black())};
     ge211::Rectangle_sprite body_sprite_{grid_dim, ge211::Color::white()};
     ge211::Rectangle_sprite tail_sprite{grid_dim, ge211::Color::medium_red()};
     ge211::Text_sprite title_sprite{"FANCY SNAKE", {"sans.ttf", 55}};
-    ge211::Text_sprite press_key_sprite{"press any key to start", {"sans.ttf", 25}};
+    ge211::Text_sprite press_key_sprite
+    {"press any key to start", {"sans.ttf", 25}};
     ge211::Text_sprite pause_sprite{"PAUSE", {"sans.ttf", 55}};
     ge211::Text_sprite level_up_sprite{"Level up!", {"sans.ttf", 55}};
     ge211::Text_sprite game_over_sprite{"GAME OVER", {"sans.ttf", 55}};
     ge211::Text_sprite score_sprite_1;
     ge211::Text_sprite score_sprite_2;
     ge211::Text_sprite skill_ready_sprite{"READY", {"sans.ttf", 30}};
-    ge211::Rectangle_sprite ready_background_sprite{{105, 30},
-                                                    ge211::Color::medium_green()};
-    ge211::Rectangle_sprite using_background_sprite{{105, 30},
-                                                    ge211::Color::medium_red()};
-    ge211::Text_sprite restart_sprite{"press \'b\' to restart", {"sans.ttf", 30}};
-    ge211::Text_sprite advance_sprite{"press \'n\' to advance", {"sans.ttf", 30}};
+    ge211::Rectangle_sprite ready_background_sprite
+    {{105, 30}, ge211::Color::medium_green()};
+    ge211::Rectangle_sprite using_background_sprite
+    {{105, 30}, ge211::Color::medium_red()};
+    ge211::Text_sprite restart_sprite{"press \'b\' to restart",
+                                      {"sans.ttf", 30}};
+    ge211::Text_sprite advance_sprite{"press \'n\' to advance",
+                                      {"sans.ttf", 30}};
     // Counting down when leveling up
     int count_down_{3};
     void count_down()

@@ -43,7 +43,8 @@ public:
         data_ = std::vector<T>(n, value);
     }
     // Using iterators.
-    template <typename InputIterator> RingBuffer(InputIterator first, InputIterator last) {
+    template <typename InputIterator>
+    RingBuffer(InputIterator first, InputIterator last) {
         st_ = 0;
         size_ = capacity_ = last - first;
         data_ = std::vector<T>(first, last);
