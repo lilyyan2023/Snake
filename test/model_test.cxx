@@ -179,3 +179,18 @@ TEST_CASE("get into right hole")
     m.update();
     CHECK( m.snake() == Snake{{0,m.mid_y()+1}, {42,m.mid_y()+1}});
 }
+TEST_CASE( "speed" )
+{
+    Model m(Geometry(), 1);
+    double interval = m.geometry().update_interval(m.level());
+    m.update();
+    m.update();
+    CHECK( interval == m.geometry().update_interval(m.level()) );
+    Model m1(m.geometry(), 2);
+    CHECK( interval > m1.geometry().update_interval(m1.level()) );
+    interval = m1.geometry().update_interval(m1.level());
+    m1.update();
+    m1.update();
+    m1.update();
+    CHECK( interval == m1.geometry().update_interval(m1.level()) );
+}

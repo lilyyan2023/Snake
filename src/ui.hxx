@@ -127,5 +127,4 @@ private:
     double since_last_update;
 };
 
-
 #endif //FINAL_PROJECT_UI_HXX
