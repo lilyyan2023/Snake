@@ -40,7 +40,7 @@ TEST_CASE("snake_'s length cut off")
     CHECK( m.snake_len() == 5 );
     m.update();
     CHECK( m.snake_len() == 4 );
-    CHECK( m.alive() == true);
+    CHECK( m.alive() );
 }
 TEST_CASE("dead when snake_ collides with its other body parts")
 {
