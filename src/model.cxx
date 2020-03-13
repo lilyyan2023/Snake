@@ -18,6 +18,7 @@ Model::Model(const Geometry& geometry, int level)
 , door_position_{-1,-1}
 , skill_timer_ (0)
 {
+    geometry_.skill_factor_ = 1;
     for (int j = 0; j <= geometry_.board_dims_.height + 1; j++){
         if (j != mid_y() + 1){
             wall_positions_.emplace_back(0, j);

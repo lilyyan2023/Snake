@@ -13,11 +13,6 @@ public:
         window_dims_ = {(board_dims_.width + 2) * (grid_size + space_size)
             , (board_dims_.height + 2) * (grid_size + space_size) + 55};
     }
-    Geometry(const Geometry& g)
-    {
-        *this = g;
-        skill_factor_ = 1;
-    }
     int mid_x() const { return window_dims_.width / 2; }
     int mid_y() const { return window_dims_.height / 2; }
     static int level_score(int n) { return 80 * n; }

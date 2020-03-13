@@ -41,7 +41,7 @@ protected:
 
 private:
     /// Helpers
-    Geometry geometry() { return model_.geometry(); }
+    const Geometry& geometry() { return model_.geometry(); }
     int level() { return model_.level(); }
     ge211::Color get_color(); // Change color based on score.
     void draw_begin(ge211::Sprite_set&); // draw the begin menu
