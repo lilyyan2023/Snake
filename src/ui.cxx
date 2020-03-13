@@ -1,7 +1,7 @@
 #include "ui.hxx"
 
-UI::UI(const Geometry& geometry)
-: model_{geometry, 1}
+UI::UI(Geometry geometry, int lev)
+: model_{geometry, lev}
 , grid_dim{geometry.grid_size, geometry.grid_size}
 , status_(begin)
 , since_last_update(0)

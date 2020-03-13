@@ -7,8 +7,9 @@ class Geometry {
 public:
     friend class Model;
     friend class UI;
-    Geometry()
+    explicit Geometry(int n = 41, int m = 27)
     {
+        board_dims_ = ge211::Dimensions{n, m};
         window_dims_ = {(board_dims_.width + 2) * (grid_size + space_size)
             , (board_dims_.height + 2) * (grid_size + space_size) + 55};
     }

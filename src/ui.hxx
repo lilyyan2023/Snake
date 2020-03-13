@@ -7,7 +7,7 @@ enum Screen { gameplay, begin, pause, countdown, gameover, levelup };
 
 class UI : public ge211::Abstract_game {
 public:
-    explicit UI(const Geometry&); // Initialize game with given dimensions.
+    explicit UI(Geometry, int lev = 1);
 
 protected:
     void draw(ge211::Sprite_set& set) override {
