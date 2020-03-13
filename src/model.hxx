@@ -5,7 +5,7 @@
 
 class Model {
 public:
-    explicit Model(Geometry, int level);
+    explicit Model(const Geometry&, int level);
 
     ge211::Dimensions window_dims() const { return geometry_.window_dims_; }
     ge211::Dimensions board_dims() const { return geometry_.board_dims_; }

@@ -2,7 +2,7 @@
 
 #include "model.hxx"
 
-Model::Model(Geometry geometry, int level)
+Model::Model(const Geometry& geometry, int level)
 : geometry_(geometry)
 , apple_{-1, -1}
 , score_(10)
