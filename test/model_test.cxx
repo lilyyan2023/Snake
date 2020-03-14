@@ -181,16 +181,23 @@ TEST_CASE("get into right hole")
 }
 TEST_CASE( "speed" )
 {
-    Model m(Geometry(), 1);
-    double interval = m.geometry().update_interval(m.level());
-    m.update();
-    m.update();
-    CHECK( interval == m.geometry().update_interval(m.level()) );
-    Model m1(m.geometry(), 2);
-    CHECK( interval > m1.geometry().update_interval(m1.level()) );
-    interval = m1.geometry().update_interval(m1.level());
-    m1.update();
+    Model m1(Geometry(), 1);
+    double interval = m1.geometry().update_interval(m1.level());
     m1.update();
     m1.update();
     CHECK( interval == m1.geometry().update_interval(m1.level()) );
+    Model m2(m2.geometry(), 2);
+    CHECK( interval > m2.geometry().update_interval(m2.level()) );
+    interval = m2.geometry().update_interval(m2.level());
+    m2.update();
+    m2.update();
+    m2.update();
+    CHECK( interval == m2.geometry().update_interval(m2.level()) );
+    Model m3(m3.geometry(), 3);
+    CHECK( interval > m3.geometry().update_interval(m3.level()));
+    interval = m3.geometry().update_interval(m3.level());
+    m3.update();
+    m3.update();
+    m3.update();
+    CHECK( interval == m3.geometry().update_interval(m3.level()));
 }
