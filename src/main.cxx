@@ -4,13 +4,17 @@
 int main(int argc, char* argv[])
 {
     if (argc == 1) {
-        UI(Geometry()).run();
+        UI game((Geometry()));
+        game.run();
     } else if (argc == 2) {
-        UI(Geometry(), std::stoi(argv[1])).run();
+        UI game(Geometry(), std::stoi(argv[1]));
+        game.run();
     } else if (argc == 3) {
-        UI(Geometry(std::stoi(argv[1]), std::stoi(argv[2]))).run();
+        UI game(Geometry(std::stoi(argv[1]), std::stoi(argv[2])));
+        game.run();
     } else if (argc == 4) {
-        UI(Geometry(std::stoi(argv[1]), std::stoi(argv[2]))
-        , std::stoi(argv[3])).run();
+        UI game(Geometry(std::stoi(argv[1]), std::stoi(argv[2]))
+        , std::stoi(argv[3]));
+        game.run();
     }
  }
