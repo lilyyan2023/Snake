@@ -186,14 +186,14 @@ TEST_CASE( "speed" )
     m1.update();
     m1.update();
     CHECK( interval == m1.geometry().update_interval(m1.level()) );
-    Model m2(m2.geometry(), 2);
+    Model m2(m1.geometry(), 2);
     CHECK( interval > m2.geometry().update_interval(m2.level()) );
     interval = m2.geometry().update_interval(m2.level());
     m2.update();
     m2.update();
     m2.update();
     CHECK( interval == m2.geometry().update_interval(m2.level()) );
-    Model m3(m3.geometry(), 3);
+    Model m3(m1.geometry(), 3);
     CHECK( interval > m3.geometry().update_interval(m3.level()));
     interval = m3.geometry().update_interval(m3.level());
     m3.update();
